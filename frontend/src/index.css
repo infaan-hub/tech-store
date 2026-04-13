@@ -1,5 +1,5 @@
 :root {
-  --bg: #353839;
+  --bg: #b3b3b3;
   --surface: rgba(255, 255, 255, 0.72);
   --surface-strong: rgba(255, 255, 255, 0.9);
   --surface-soft: rgba(247, 241, 233, 0.78);
@@ -40,7 +40,7 @@
 }
 
 :root[data-theme="dark"] {
-  --bg: #353839;
+  --bg: #b3b3b3;
   --surface: rgba(46, 47, 48, 0.8);
   --surface-strong: rgba(56, 57, 58, 0.92);
   --surface-soft: rgba(41, 42, 43, 0.86);
