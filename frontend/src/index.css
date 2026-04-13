@@ -1,16 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@400;500;600;700&display=swap");
-
 :root {
   --bg: #353839;
   --surface: rgba(255, 255, 255, 0.72);
   --surface-strong: rgba(255, 255, 255, 0.9);
-  --surface-soft: rgba(239, 251, 255, 0.78);
-  --ink: #102a43;
-  --muted: #486581;
-  --line: rgba(29, 78, 137, 0.16);
-  --accent: #0077b6;
-  --accent-strong: #023e8a;
-  --accent-soft: rgba(0, 119, 182, 0.16);
+  --surface-soft: rgba(247, 241, 233, 0.78);
+  --ink: #1f1f1f;
+  --muted: #5b5248;
+  --line: rgba(127, 85, 57, 0.18);
+  --accent: #b08968;
+  --accent-strong: #7f5539;
+  --accent-soft: rgba(176, 137, 104, 0.18);
   --ok: #0f9d58;
   --danger: #dc2626;
   --shadow-soft: 0 18px 40px rgba(64, 84, 70, 0.12);
@@ -19,14 +17,14 @@
   --neo-highlight: rgba(255, 255, 255, 0.42);
   --neo-shadow: rgba(7, 12, 47, 0.34);
   --overlay: rgba(32, 47, 35, 0.18);
-  --field-border: rgba(2, 62, 138, 0.16);
+  --field-border: rgba(127, 85, 57, 0.16);
   --field-bg: rgba(255, 255, 255, 0.7);
   --field-highlight: rgba(255, 255, 255, 0.85);
-  --panel-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(227, 247, 252, 0.78));
-  --sidebar-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(220, 243, 250, 0.76));
-  --ghost-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(203, 236, 246, 0.78));
-  --toggle-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(196, 232, 245, 0.82));
-  --hero-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.68), rgba(194, 233, 245, 0.8));
+  --panel-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(245, 236, 226, 0.8));
+  --sidebar-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(239, 227, 214, 0.78));
+  --ghost-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(230, 213, 197, 0.8));
+  --toggle-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(224, 205, 188, 0.84));
+  --hero-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(225, 206, 188, 0.82));
   --order-bg: rgba(255, 255, 255, 0.52);
   --form-bg: rgba(255, 255, 255, 0.26);
   --glass-shell: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08));
@@ -35,50 +33,50 @@
   --glass-sheen: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.26) 48%, transparent 100%);
   --glass-shadow: 0 24px 42px rgba(29, 50, 33, 0.18);
   --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.34);
-  --button-on-primary: #f6fbff;
-  --button-on-soft: #0b4f6c;
-  --icon-button-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(211, 237, 246, 0.84));
-  --icon-button-border: rgba(2, 62, 138, 0.2);
+  --button-on-primary: #fffaf5;
+  --button-on-soft: #5c3d2e;
+  --icon-button-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(234, 220, 205, 0.84));
+  --icon-button-border: rgba(127, 85, 57, 0.2);
 }
 
 :root[data-theme="dark"] {
   --bg: #353839;
-  --surface: rgba(9, 14, 92, 0.78);
-  --surface-strong: rgba(12, 19, 108, 0.92);
-  --surface-soft: rgba(8, 13, 83, 0.84);
-  --ink: #e8f7fb;
-  --muted: #9db7c4;
-  --line: rgba(102, 174, 211, 0.2);
-  --accent: #48cae4;
-  --accent-strong: #90e0ef;
-  --accent-soft: rgba(72, 202, 228, 0.22);
-  --ok: #70ddc4;
+  --surface: rgba(46, 47, 48, 0.8);
+  --surface-strong: rgba(56, 57, 58, 0.92);
+  --surface-soft: rgba(41, 42, 43, 0.86);
+  --ink: #f5ede3;
+  --muted: #c9b8a6;
+  --line: rgba(221, 184, 146, 0.2);
+  --accent: #ddb892;
+  --accent-strong: #ede0d4;
+  --accent-soft: rgba(221, 184, 146, 0.22);
+  --ok: #9ad6a5;
   --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.34);
   --shadow-card: 0 16px 34px rgba(0, 0, 0, 0.26);
   --glass-border: rgba(115, 173, 130, 0.18);
   --neo-highlight: rgba(140, 180, 230, 0.1);
   --neo-shadow: rgba(2, 10, 28, 0.62);
   --overlay: rgba(2, 10, 5, 0.55);
-  --field-border: rgba(72, 202, 228, 0.2);
-  --field-bg: rgba(13, 28, 43, 0.84);
-  --field-highlight: rgba(144, 224, 239, 0.08);
-  --panel-gradient: linear-gradient(180deg, rgba(12, 19, 108, 0.94), rgba(8, 13, 83, 0.88));
-  --sidebar-gradient: linear-gradient(180deg, rgba(11, 18, 101, 0.96), rgba(7, 12, 74, 0.92));
-  --ghost-gradient: linear-gradient(180deg, rgba(16, 26, 118, 0.92), rgba(9, 15, 86, 0.9));
-  --toggle-gradient: linear-gradient(180deg, rgba(17, 29, 126, 0.95), rgba(8, 13, 83, 0.92));
-  --hero-gradient: linear-gradient(135deg, rgba(16, 26, 118, 0.94), rgba(8, 13, 83, 0.88));
-  --order-bg: rgba(9, 15, 93, 0.78);
-  --form-bg: rgba(8, 13, 83, 0.54);
+  --field-border: rgba(221, 184, 146, 0.22);
+  --field-bg: rgba(45, 46, 47, 0.84);
+  --field-highlight: rgba(237, 224, 212, 0.08);
+  --panel-gradient: linear-gradient(180deg, rgba(58, 59, 60, 0.94), rgba(43, 44, 45, 0.9));
+  --sidebar-gradient: linear-gradient(180deg, rgba(55, 56, 57, 0.96), rgba(39, 40, 41, 0.92));
+  --ghost-gradient: linear-gradient(180deg, rgba(70, 62, 54, 0.92), rgba(49, 45, 41, 0.9));
+  --toggle-gradient: linear-gradient(180deg, rgba(78, 68, 58, 0.95), rgba(49, 45, 41, 0.92));
+  --hero-gradient: linear-gradient(135deg, rgba(79, 69, 60, 0.94), rgba(49, 45, 41, 0.88));
+  --order-bg: rgba(48, 49, 50, 0.8);
+  --form-bg: rgba(46, 47, 48, 0.56);
   --glass-shell: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
   --glass-shell-strong: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
   --glass-pill: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
   --glass-sheen: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.14) 48%, transparent 100%);
   --glass-shadow: 0 24px 42px rgba(0, 0, 0, 0.26);
   --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.16);
-  --button-on-primary: #04111c;
-  --button-on-soft: #dff8ff;
-  --icon-button-bg: linear-gradient(145deg, rgba(19, 31, 128, 0.96), rgba(10, 17, 88, 0.94));
-  --icon-button-border: rgba(144, 224, 239, 0.38);
+  --button-on-primary: #2d2118;
+  --button-on-soft: #f4e7db;
+  --icon-button-bg: linear-gradient(145deg, rgba(88, 78, 69, 0.96), rgba(58, 52, 47, 0.94));
+  --icon-button-border: rgba(221, 184, 146, 0.38);
 }
 
 * {
@@ -87,7 +85,7 @@
 
 body {
   margin: 0;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   color: var(--ink);
   background: var(--bg);
   position: relative;
@@ -100,8 +98,8 @@ body::before {
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(circle at top left, rgba(93, 177, 116, 0.14), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(58, 145, 87, 0.12), transparent 24%),
+    radial-gradient(circle at top left, rgba(176, 137, 104, 0.16), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(127, 85, 57, 0.14), transparent 24%),
     var(--bg);
 }
 
@@ -393,7 +391,7 @@ img {
 
 .category-filter.active {
   color: var(--button-on-primary);
-  background: linear-gradient(180deg, #42ad5d, var(--accent));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 72%, white 28%), var(--accent-strong));
 }
 
 .section-title {
@@ -711,7 +709,7 @@ img {
   box-shadow:
     0 24px 42px rgba(34, 26, 15, 0.34),
     0 6px 14px rgba(34, 26, 15, 0.22);
-  font-family: "Outfit", "DM Sans", sans-serif;
+  font-family: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   isolation: isolate;
 }
 
@@ -770,7 +768,7 @@ img {
   max-width: 13ch;
   margin: 0;
   color: #ffffff;
-  font-family: "Outfit", "DM Sans", sans-serif;
+  font-family: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.35rem, 3vw, 1.9rem);
   font-weight: 600;
   line-height: 0.98;
@@ -1018,7 +1016,7 @@ button:not(:disabled):hover {
 }
 
 .primary-btn {
-  background: linear-gradient(180deg, #42ad5d, var(--accent));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 72%, white 28%), var(--accent-strong));
   color: var(--button-on-primary);
 }
 
@@ -1066,7 +1064,7 @@ button:not(:disabled):hover {
   font: inherit;
   font-weight: 700;
   color: var(--button-on-primary);
-  background: linear-gradient(180deg, #42ad5d, var(--accent));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 72%, white 28%), var(--accent-strong));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.34),
     0 14px 28px rgba(31, 143, 58, 0.18);
@@ -1188,7 +1186,7 @@ button:not(:disabled):hover {
 .cart-product-info h3 {
   margin: 0;
   color: #242a2e;
-  font-family: "Outfit", "DM Sans", sans-serif;
+  font-family: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.25rem, 3vw, 2rem);
   font-weight: 800;
   line-height: 0.98;
@@ -1321,7 +1319,7 @@ button:not(:disabled):hover {
 
 .payment-topbar h2 {
   margin: 0;
-  font-family: "Outfit", "DM Sans", sans-serif;
+  font-family: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: -0.04em;
@@ -1443,7 +1441,7 @@ button:not(:disabled):hover {
   border-top: 2px dashed #a6abb4;
   border-bottom: 2px dashed #d8dbe1;
   color: #222832;
-  font-family: "Courier New", monospace;
+  font-family: Consolas, "Lucida Console", monospace;
   font-size: 0.76rem;
   letter-spacing: 0.16em;
   text-align: center;
@@ -1792,14 +1790,14 @@ button:not(:disabled):hover {
   border-radius: 50%;
   color: #ffffff;
   background: #16a34a;
-  font-family: "Outfit", "DM Sans", sans-serif;
+  font-family: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-weight: 900;
   box-shadow: 0 12px 22px rgba(22, 163, 74, 0.22);
 }
 
 .ticket-receipt-card h2 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: 2rem;
 }
 
@@ -1828,7 +1826,7 @@ button:not(:disabled):hover {
 .receipt-grid strong {
   display: block;
   color: #1e1a25;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: 1.03rem;
 }
 
@@ -1905,7 +1903,7 @@ button:not(:disabled):hover {
   padding: 0.65rem;
   color: #111111;
   background: repeating-linear-gradient(90deg, #111 0 2px, #fff 2px 4px, #111 4px 5px, #fff 5px 8px);
-  font-family: "Courier New", monospace;
+  font-family: Consolas, "Lucida Console", monospace;
   letter-spacing: 0.18em;
 }
 
@@ -2272,7 +2270,7 @@ form {
     inset 0 -1px 0 rgba(255, 255, 255, 0.08),
     0 30px 70px rgba(0, 0, 0, 0.42);
   color: #ffffff;
-  font-family: "Outfit", "DM Sans", sans-serif;
+  font-family: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   backdrop-filter: blur(22px) saturate(126%);
   -webkit-backdrop-filter: blur(22px) saturate(126%);
 }
@@ -2419,7 +2417,7 @@ form {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     0 16px 30px rgba(0, 0, 0, 0.22);
-  font-family: "Outfit", "DM Sans", sans-serif;
+  font-family: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-weight: 600;
   cursor: pointer;
   backdrop-filter: blur(16px);
