@@ -141,10 +141,10 @@ WSGI_APPLICATION = "techstore_backend.wsgi.application"
 if dj_database_url is None:
     raise ImproperlyConfigured("dj-database-url is required to configure the Neon PostgreSQL database.")
 
-database_url = os.getenv(
-    "DATABASE_URL",
-    "postgresql://neondb_owner:npg_mIKHiep8S4Xv@ep-crimson-haze-anvgurjk-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
-)
+database_url = os.getenv("DATABASE_URL", "").strip()
+
+if not database_url:
+    raise ImproperlyConfigured("DATABASE_URL is required and must point to your Neon PostgreSQL database.")
 
 if database_url.startswith("sqlite"):
     raise ImproperlyConfigured("SQLite is disabled. Set DATABASE_URL to the Neon PostgreSQL connection string.")
