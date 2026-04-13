@@ -13,7 +13,7 @@ from xml.sax.saxutils import escape
 from django.contrib.auth import authenticate, get_user_model
 from django.core.mail import send_mail
 from django.core.exceptions import SuspiciousOperation
-from django.db import DatabaseError, transaction
+from django.db import DatabaseError, transaction, models
 from django.http import Http404, HttpResponse
 from django.utils import timezone
 from rest_framework import permissions, status, viewsets, exceptions
@@ -1271,7 +1271,11 @@ class UserViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ("list", "retrieve"):
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated(), IsAdminRole()]
 
 
 class SupplierViewSet(viewsets.ModelViewSet):
@@ -1302,6 +1306,37 @@ class ProductViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return PublicProductSerializer
         return ProductSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        user = getattr(self.request, "user", None)
+
+        if self.action in ("list", "retrieve", "image") and (
+            not getattr(user, "is_authenticated", False) or getattr(user, "role", None) not in ("admin", "supplier")
+        ):
+            queryset = queryset.filter(is_active=True)
+        elif getattr(user, "role", None) == "supplier":
+            supplier = Supplier.objects.filter(user=user).first()
+            queryset = queryset.filter(supplier=supplier) if supplier else queryset.none()
+
+        category_name = self.request.query_params.get("category")
+        search = self.request.query_params.get("search")
+        in_stock = self.request.query_params.get("in_stock")
+
+        if category_name:
+            queryset = queryset.filter(category__name__iexact=category_name.strip())
+        if search:
+            term = search.strip()
+            queryset = queryset.filter(
+                models.Q(name__icontains=term)
+                | models.Q(description__icontains=term)
+                | models.Q(category__name__icontains=term)
+                | models.Q(barcode__icontains=term)
+            )
+        if in_stock in {"1", "true", "True"}:
+            queryset = queryset.filter(quantity__gt=0)
+
+        return queryset
 
     def _serialize_products(self, products):
         serializer_class = self.get_serializer_class()
@@ -1501,13 +1536,17 @@ class SaleViewSet(viewsets.ModelViewSet):
 class SaleItemViewSet(viewsets.ModelViewSet):
     queryset = SaleItem.objects.select_related("sale", "product").all()
     serializer_class = SaleItemSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        return [permissions.IsAuthenticated(), IsAdminRole()]
 
 
 class StockViewSet(viewsets.ModelViewSet):
     queryset = StockMovement.objects.select_related("product", "sale_item").all()
     serializer_class = StockSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        return [permissions.IsAuthenticated(), IsAdminRole()]
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
@@ -1520,6 +1559,13 @@ class PaymentViewSet(viewsets.ModelViewSet):
         if self.action in ("admin_pending",):
             return PaymentAdminSerializer
         return PaymentSerializer
+
+    def get_permissions(self):
+        if self.action in ("list", "retrieve"):
+            return [permissions.IsAuthenticated()]
+        if self.action in ("confirm", "admin_pending"):
+            return [permissions.IsAuthenticated(), IsAdminOrSupplierRole() if self.action == "confirm" else IsAdminRole()]
+        return [permissions.IsAuthenticated(), IsAdminRole()]
 
     def get_queryset(self):
         user = self.request.user
@@ -1631,6 +1677,18 @@ class AdminCreateUserView(APIView):
             )
         except (DatabaseError, API_SERIALIZATION_ERRORS):
             return Response({"detail": "User creation is temporarily unavailable."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+
+class HealthCheckView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        try:
+            Product.objects.only("id").order_by("id").first()
+            return Response({"status": "ok", "database": "connected"}, status=status.HTTP_200_OK)
+        except DatabaseError:
+            logger.exception("Health check failed because the database is unavailable.")
+            return Response({"status": "error", "database": "unavailable"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
 class ScheduledAccessListView(APIView):

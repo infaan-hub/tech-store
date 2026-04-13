@@ -297,6 +297,12 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = "__all__"
 
+    def validate_name(self, value):
+        value = str(value).strip()
+        if not value:
+            raise serializers.ValidationError("Category name is required.")
+        return value
+
 
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
@@ -351,6 +357,40 @@ class ProductSerializer(serializers.ModelSerializer):
                 return category_by_id
         category, _ = Category.objects.get_or_create(name=text)
         return category
+
+    def validate_name(self, value):
+        value = str(value).strip()
+        if not value:
+            raise serializers.ValidationError("Product name is required.")
+        return value
+
+    def validate_barcode(self, value):
+        value = str(value).strip()
+        if not value:
+            raise serializers.ValidationError("Barcode is required.")
+        return value
+
+    def validate_price(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Price must be greater than zero.")
+        return value
+
+    def validate_cost_price(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Cost price cannot be negative.")
+        return value
+
+    def validate_quantity(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Quantity cannot be negative.")
+        return value
+
+    def validate(self, attrs):
+        price = attrs.get("price", getattr(self.instance, "price", None))
+        cost_price = attrs.get("cost_price", getattr(self.instance, "cost_price", None))
+        if price is not None and cost_price is not None and cost_price > price:
+            raise serializers.ValidationError({"cost_price": "Cost price cannot be greater than selling price."})
+        return attrs
 
     def create(self, validated_data):
         raw_category = validated_data.pop("category", None)
@@ -453,7 +493,7 @@ class PaymentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("control_number", "confirmed_by")
+        read_only_fields = ("sale", "control_number", "confirmed_by", "status")
 
     def get_proof_image_url(self, obj):
         return binary_file_data_url(obj.proof_image_data, obj.proof_image_content_type)
@@ -590,3 +630,27 @@ class CheckoutSerializer(serializers.Serializer):
     customer_address = serializers.CharField(required=False, allow_blank=True)
     delivery_location = serializers.CharField(required=False, allow_blank=True)
     terms_accepted = serializers.BooleanField(default=False)
+
+    def validate_payment_method(self, value):
+        value = str(value or "").strip().lower()
+        allowed_methods = {"mobile_money", "paypal", "visa", "mastercard", "amex", "yasmixx", "cash"}
+        if value not in allowed_methods:
+            raise serializers.ValidationError("Unsupported payment method.")
+        return value
+
+    def validate(self, attrs):
+        items = attrs.get("items") or []
+        if not items:
+            raise serializers.ValidationError({"items": "At least one item is required."})
+
+        seen_products = set()
+        for item in items:
+            product_id = item["product"]
+            if product_id in seen_products:
+                raise serializers.ValidationError({"items": "Duplicate products are not allowed in checkout."})
+            seen_products.add(product_id)
+
+        if not attrs.get("terms_accepted"):
+            raise serializers.ValidationError({"terms_accepted": "You must accept the terms to continue."})
+
+        return attrs
