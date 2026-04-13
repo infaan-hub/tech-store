@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="title desc">
+  <title id="title">Product image fallback</title>
+  <desc id="desc">A fallback product illustration used when the uploaded image is unavailable.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4f0de" />
+      <stop offset="100%" stop-color="#dfe9d5" />
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#244b36" />
+      <stop offset="100%" stop-color="#3f7f59" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="48" fill="url(#bg)" />
+  <g transform="translate(88 86)">
+    <rect width="464" height="468" rx="40" fill="url(#card)" />
+    <rect x="58" y="56" width="348" height="218" rx="28" fill="#f6f2e8" opacity="0.96" />
+    <g transform="translate(116 118)">
+      <rect x="0" y="0" width="84" height="132" rx="16" fill="#7f4f24" />
+      <rect x="96" y="0" width="84" height="132" rx="16" fill="#936639" />
+      <rect x="192" y="0" width="84" height="132" rx="16" fill="#7f4f24" />
+      <rect x="0" y="146" width="84" height="132" rx="16" fill="#936639" />
+      <rect x="96" y="146" width="84" height="132" rx="16" fill="#7f4f24" />
+      <rect x="192" y="146" width="84" height="132" rx="16" fill="#936639" />
+    </g>
+    <text x="232" y="345" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="30" fill="#f4f0de" letter-spacing="4">
+      PRODUCT IMAGE
+    </text>
+    <text x="232" y="392" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="46" font-weight="700" fill="#ffffff">
+      TEMPORARILY UNAVAILABLE
+    </text>
+    <text x="232" y="430" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#d7ead7">
+      This backup artwork keeps the catalog visible.
+    </text>
+  </g>
+</svg>
