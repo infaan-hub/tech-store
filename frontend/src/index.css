@@ -42,10 +42,10 @@
 }
 
 :root[data-theme="dark"] {
-  --bg: #0b1f33;
-  --surface: rgba(14, 31, 48, 0.78);
-  --surface-strong: rgba(18, 39, 60, 0.92);
-  --surface-soft: rgba(12, 28, 43, 0.84);
+  --bg: #03045e;
+  --surface: rgba(9, 14, 92, 0.78);
+  --surface-strong: rgba(12, 19, 108, 0.92);
+  --surface-soft: rgba(8, 13, 83, 0.84);
   --ink: #e8f7fb;
   --muted: #9db7c4;
   --line: rgba(102, 174, 211, 0.2);
@@ -62,13 +62,13 @@
   --field-border: rgba(72, 202, 228, 0.2);
   --field-bg: rgba(13, 28, 43, 0.84);
   --field-highlight: rgba(144, 224, 239, 0.08);
-  --panel-gradient: linear-gradient(180deg, rgba(18, 39, 60, 0.94), rgba(11, 28, 43, 0.88));
-  --sidebar-gradient: linear-gradient(180deg, rgba(17, 35, 54, 0.96), rgba(10, 23, 36, 0.92));
-  --ghost-gradient: linear-gradient(180deg, rgba(22, 44, 67, 0.92), rgba(13, 29, 45, 0.9));
-  --toggle-gradient: linear-gradient(180deg, rgba(24, 49, 74, 0.95), rgba(12, 28, 43, 0.92));
-  --hero-gradient: linear-gradient(135deg, rgba(22, 44, 67, 0.94), rgba(12, 28, 43, 0.88));
-  --order-bg: rgba(15, 31, 48, 0.78);
-  --form-bg: rgba(13, 28, 43, 0.54);
+  --panel-gradient: linear-gradient(180deg, rgba(12, 19, 108, 0.94), rgba(8, 13, 83, 0.88));
+  --sidebar-gradient: linear-gradient(180deg, rgba(11, 18, 101, 0.96), rgba(7, 12, 74, 0.92));
+  --ghost-gradient: linear-gradient(180deg, rgba(16, 26, 118, 0.92), rgba(9, 15, 86, 0.9));
+  --toggle-gradient: linear-gradient(180deg, rgba(17, 29, 126, 0.95), rgba(8, 13, 83, 0.92));
+  --hero-gradient: linear-gradient(135deg, rgba(16, 26, 118, 0.94), rgba(8, 13, 83, 0.88));
+  --order-bg: rgba(9, 15, 93, 0.78);
+  --form-bg: rgba(8, 13, 83, 0.54);
   --glass-shell: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
   --glass-shell-strong: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
   --glass-pill: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
@@ -77,7 +77,7 @@
   --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   --button-on-primary: #04111c;
   --button-on-soft: #dff8ff;
-  --icon-button-bg: linear-gradient(145deg, rgba(30, 56, 81, 0.96), rgba(16, 32, 49, 0.94));
+  --icon-button-bg: linear-gradient(145deg, rgba(19, 31, 128, 0.96), rgba(10, 17, 88, 0.94));
   --icon-button-border: rgba(144, 224, 239, 0.38);
 }
 
