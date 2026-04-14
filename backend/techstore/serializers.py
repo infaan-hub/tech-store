@@ -157,9 +157,47 @@ class RegisterSerializer(serializers.ModelSerializer):
             "password_confirm",
         )
 
+    def validate_username(self, value):
+        username = str(value or "").strip()
+        if not username:
+            raise serializers.ValidationError("Username is required.")
+        existing = User.objects.filter(username__iexact=username)
+        if self.instance:
+            existing = existing.exclude(pk=self.instance.pk)
+        if existing.exists():
+            raise serializers.ValidationError("A user with this username already exists.")
+        return username
+
+    def validate_email(self, value):
+        email = str(value or "").strip().lower()
+        if not email:
+            raise serializers.ValidationError("Email is required.")
+        existing = User.objects.filter(email__iexact=email)
+        if self.instance:
+            existing = existing.exclude(pk=self.instance.pk)
+        if existing.exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return email
+
+    def validate_phone(self, value):
+        phone = str(value or "").strip()
+        if not phone:
+            raise serializers.ValidationError("Phone is required.")
+        existing = User.objects.filter(phone=phone)
+        if self.instance:
+            existing = existing.exclude(pk=self.instance.pk)
+        if existing.exists():
+            raise serializers.ValidationError("A user with this phone already exists.")
+        return phone
+
     def validate(self, attrs):
         if attrs["password"] != attrs["password_confirm"]:
             raise serializers.ValidationError({"password_confirm": "Passwords do not match."})
+        attrs["username"] = str(attrs.get("username") or "").strip()
+        attrs["email"] = str(attrs.get("email") or "").strip().lower()
+        attrs["full_name"] = str(attrs.get("full_name") or "").strip()
+        attrs["phone"] = str(attrs.get("phone") or "").strip()
+        attrs["address"] = str(attrs.get("address") or "").strip()
         return attrs
 
     @transaction.atomic
@@ -290,6 +328,12 @@ class ScheduledAccessSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"detail": "End time must be after start time."})
 
         return attrs
+
+    def update(self, instance, validated_data):
+        instance.access_window_start = validated_data.get("access_window_start", instance.access_window_start)
+        instance.access_window_end = validated_data.get("access_window_end", instance.access_window_end)
+        instance.save(update_fields=["access_window_start", "access_window_end", "updated_at"])
+        return instance
 
 
 class CategorySerializer(serializers.ModelSerializer):

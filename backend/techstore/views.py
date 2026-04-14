@@ -1119,6 +1119,26 @@ def token_payload_for_user(user):
     }
 
 
+def authenticate_with_identifier(request, identifier, password):
+    normalized_identifier = str(identifier or "").strip()
+    if not normalized_identifier or not password:
+        return None
+
+    user = authenticate(request=request, username=normalized_identifier, password=password)
+    if user:
+        return user
+
+    matching_user = User.objects.filter(username__iexact=normalized_identifier).first()
+    if matching_user:
+        return authenticate(request=request, username=matching_user.username, password=password)
+
+    matching_user = User.objects.filter(email__iexact=normalized_identifier).first()
+    if matching_user:
+        return authenticate(request=request, username=matching_user.username, password=password)
+
+    return None
+
+
 class RoleLoginView(APIView):
     permission_classes = [permissions.AllowAny]
     required_role = None
@@ -1127,9 +1147,13 @@ class RoleLoginView(APIView):
         try:
             username = request.data.get("username")
             password = request.data.get("password")
-            user = authenticate(request=request, username=username, password=password)
+            user = authenticate_with_identifier(request, username, password)
+            if not str(username or "").strip() or not str(password or "").strip():
+                return Response({"detail": "Username/email and password are required."}, status=status.HTTP_400_BAD_REQUEST)
             if not user:
                 return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+            if not user.is_active:
+                return Response({"detail": "This account is inactive."}, status=status.HTTP_403_FORBIDDEN)
             if self.required_role and user.role != self.required_role:
                 return Response({"detail": f"Only {self.required_role} can login here."}, status=status.HTTP_403_FORBIDDEN)
             if user_requires_scheduled_access(user) and not user_has_active_scheduled_access(user):

@@ -102,11 +102,25 @@ function ScheduleTaskPage() {
     setError("");
     setNotice("");
     const draft = drafts[user.id] || {};
+    const startIso = toIsoValue(draft.access_window_start);
+    const endIso = toIsoValue(draft.access_window_end);
+
+    if ((!startIso && endIso) || (startIso && !endIso)) {
+      setError("Set both start and end time, or clear both fields to disable access.");
+      setSavingId(null);
+      return;
+    }
+
+    if (startIso && endIso && new Date(endIso).getTime() <= new Date(startIso).getTime()) {
+      setError("End time must be after start time.");
+      setSavingId(null);
+      return;
+    }
 
     try {
       await http.patch(`/api/auth/schedule-task/${user.id}/`, {
-        access_window_start: toIsoValue(draft.access_window_start),
-        access_window_end: toIsoValue(draft.access_window_end),
+        access_window_start: startIso,
+        access_window_end: endIso,
       });
       setNotice(`Schedule updated for ${user.full_name || user.username}.`);
       await loadSchedules();
@@ -144,6 +158,7 @@ function ScheduleTaskPage() {
         <p className="muted">
           Set the allowed date and time for each supplier and driver. Outside that window they cannot log in, and active sessions are logged out when the time ends.
         </p>
+        <p className="muted">The date and time you enter here use your current local timezone.</p>
         <div className="row">
           <button className="ghost-btn" type="button" onClick={loadSchedules}>
             Refresh List

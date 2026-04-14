@@ -22,14 +22,14 @@ const ROLE_CONFIG = {
   supplier: {
     title: "Supplier Login",
     eyebrow: "Inventory access",
-    description: "Open your supplier dashboard to add products and maintain stock details.",
+    description: "Open your supplier dashboard to add products and maintain stock details during the admin-approved access window.",
     action: "loginSupplier",
     next: "/supplier/dashboard",
   },
   driver: {
     title: "Driver Login",
     eyebrow: "Delivery access",
-    description: "Sign in to view assigned deliveries and update drop-off status.",
+    description: "Sign in to view assigned deliveries and update drop-off status during the admin-approved access window.",
     action: "loginDriver",
     next: "/driver/dashboard",
   },
@@ -70,11 +70,11 @@ function RoleLoginPage({ role }) {
 
         <div className="auth-field-list">
           <label className="auth-field">
-            <span>Username</span>
+            <span>Username or Email</span>
             <input
               name="username"
               type="text"
-              placeholder="Enter your username"
+              placeholder="Enter your username or email"
               value={form.username}
               onChange={(event) => setForm((prev) => ({ ...prev, username: event.target.value }))}
               required
@@ -94,6 +94,11 @@ function RoleLoginPage({ role }) {
         </div>
 
         {error ? <p className="error auth-feedback">{error}</p> : null}
+        {role === "supplier" || role === "driver" ? (
+          <p className="auth-footnote">
+            Access for this role only works inside the date and time scheduled by admin.
+          </p>
+        ) : null}
         <button className="primary-btn auth-submit" type="submit" disabled={loading}>
           {loading ? "Please wait..." : "Login"}
         </button>
