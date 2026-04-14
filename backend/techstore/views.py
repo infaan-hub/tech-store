@@ -21,6 +21,7 @@ from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Category, Customer, Payment, Product, Sale, SaleItem, StockMovement, Supplier
@@ -1257,6 +1258,7 @@ class AdminRegisterView(APIView):
 
 
 class MeView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
@@ -1687,6 +1689,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
 
 class AdminCreateUserView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsAdminRole]
     parser_classes = [MultiPartParser, FormParser]
 
@@ -1716,6 +1719,7 @@ class HealthCheckView(APIView):
 
 
 class ScheduledAccessListView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsAdminRole]
 
     def get(self, request):
@@ -1733,6 +1737,7 @@ class ScheduledAccessListView(APIView):
 
 
 class ScheduledAccessDetailView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsAdminRole]
 
     def patch(self, request, user_id):
@@ -2017,6 +2022,7 @@ def _auto_assign_sale_to_sole_driver(sale):
 
 
 class SupplierDashboardView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsSupplierRole]
 
     def get(self, request):
@@ -2056,6 +2062,7 @@ class SupplierDashboardView(APIView):
 
 
 class SupplierAlertsView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsSupplierRole]
 
     def get(self, request):
@@ -2092,6 +2099,7 @@ class SupplierAlertsView(APIView):
 
 
 class DriverDashboardView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsDriverRole]
 
     def get(self, request):
@@ -2118,6 +2126,7 @@ class DriverDashboardView(APIView):
 
 
 class DriverAlertsView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsDriverRole]
 
     def get(self, request):
@@ -2151,6 +2160,7 @@ class DriverAlertsView(APIView):
 
 
 class DriverUpdateDeliveryView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsDriverRole]
 
     def patch(self, request, sale_id):
