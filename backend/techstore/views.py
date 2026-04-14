@@ -161,10 +161,13 @@ def user_has_active_scheduled_access(user, *, at_time=None):
     if not user_requires_scheduled_access(user):
         return True
 
+    if not getattr(user, "is_active", False):
+        return False
+
     start = getattr(user, "access_window_start", None)
     end = getattr(user, "access_window_end", None)
     if not start or not end:
-        return False
+        return True
 
     current_time = at_time or timezone.now()
     return start <= current_time < end
@@ -174,13 +177,13 @@ def scheduled_access_denial_detail(user, *, at_time=None):
     if not user_requires_scheduled_access(user):
         return "Access schedule is not required for this account."
 
+    if not getattr(user, "is_active", False):
+        return "This account is inactive."
+
     start = getattr(user, "access_window_start", None)
     end = getattr(user, "access_window_end", None)
     if not start or not end:
-        return (
-            f"Admin has not scheduled access for this {user.role} account yet. "
-            "Please contact admin to set your date and time."
-        )
+        return ""
 
     current_time = at_time or timezone.now()
     if current_time < start:

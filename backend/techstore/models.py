@@ -115,7 +115,7 @@ class CustomUser(AbstractUser):
         if not self.requires_scheduled_access:
             return True
         if not self.access_window_start or not self.access_window_end:
-            return False
+            return bool(self.is_active)
         now = timezone.now()
         return self.access_window_start <= now < self.access_window_end
 

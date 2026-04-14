@@ -151,8 +151,12 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (!user || !SCHEDULED_ACCESS_ROLES.has(user.role)) return undefined;
-    if (!user.has_active_scheduled_access || !user.access_window_end) {
+    if (!user.has_active_scheduled_access) {
       logout();
+      return undefined;
+    }
+
+    if (!user.access_window_end) {
       return undefined;
     }
 
