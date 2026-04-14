@@ -3,6 +3,7 @@ import logging
 import os
 import random
 import re
+from datetime import timedelta
 from io import BytesIO
 from textwrap import wrap
 from urllib.error import HTTPError, URLError
@@ -58,6 +59,7 @@ STORE_LOCATION = "Stone Town, Zanzibar"
 GOOGLE_TOKENINFO_ENDPOINT = "https://oauth2.googleapis.com/tokeninfo"
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
 SCHEDULED_ACCESS_ROLES = ("supplier", "driver")
+SCHEDULE_ACCESS_GRACE_MINUTES = 5
 RECEIPT_ABOUT_CARDS = [
     (
         "Fresh supply",
@@ -171,7 +173,8 @@ def user_has_active_scheduled_access(user, *, at_time=None):
         return True
 
     current_time = at_time or timezone.now()
-    return start <= current_time < end
+    grace = timedelta(minutes=SCHEDULE_ACCESS_GRACE_MINUTES)
+    return (start - grace) <= current_time < (end + grace)
 
 
 def scheduled_access_denial_detail(user, *, at_time=None):
@@ -187,12 +190,13 @@ def scheduled_access_denial_detail(user, *, at_time=None):
         return ""
 
     current_time = at_time or timezone.now()
-    if current_time < start:
+    grace = timedelta(minutes=SCHEDULE_ACCESS_GRACE_MINUTES)
+    if current_time < (start - grace):
         return (
             f"Your {user.role} access starts at {timezone.localtime(start).strftime('%Y-%m-%d %H:%M:%S %Z')}. "
             "You cannot login before that time."
         )
-    if current_time >= end:
+    if current_time >= (end + grace):
         return (
             f"Your {user.role} access ended at {timezone.localtime(end).strftime('%Y-%m-%d %H:%M:%S %Z')}. "
             "Ask admin to schedule a new date and time."

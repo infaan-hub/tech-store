@@ -1,5 +1,6 @@
 from io import BytesIO
 from pathlib import Path
+from datetime import timedelta
 from PIL import Image, ImageOps
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -13,6 +14,7 @@ MAX_PRODUCT_IMAGE_BYTES = 1024 * 1024
 MAX_PRODUCT_IMAGE_DIMENSION = 1600
 MIN_PRODUCT_IMAGE_DIMENSION = 96
 PRODUCT_IMAGE_QUALITIES = (85, 78, 70, 62, 54, 46, 38, 30)
+SCHEDULE_ACCESS_GRACE_MINUTES = 5
 
 
 def _image_to_rgb(image):
@@ -104,9 +106,10 @@ class CustomUser(AbstractUser):
         if not self.access_window_start or not self.access_window_end:
             return "not_scheduled"
         now = timezone.now()
-        if now < self.access_window_start:
+        grace = timedelta(minutes=SCHEDULE_ACCESS_GRACE_MINUTES)
+        if now < (self.access_window_start - grace):
             return "upcoming"
-        if now >= self.access_window_end:
+        if now >= (self.access_window_end + grace):
             return "expired"
         return "active"
 
@@ -117,7 +120,8 @@ class CustomUser(AbstractUser):
         if not self.access_window_start or not self.access_window_end:
             return bool(self.is_active)
         now = timezone.now()
-        return self.access_window_start <= now < self.access_window_end
+        grace = timedelta(minutes=SCHEDULE_ACCESS_GRACE_MINUTES)
+        return (self.access_window_start - grace) <= now < (self.access_window_end + grace)
 
     @property
     def has_profile_image(self):
