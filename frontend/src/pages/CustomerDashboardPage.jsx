@@ -22,7 +22,7 @@ function CustomerDashboardPage() {
   const [deletingOrderId, setDeletingOrderId] = useState(null);
   const [clearingOrders, setClearingOrders] = useState(false);
   const [error, setError] = useState("");
-  const { addToCart } = useCart();
+  const { addToCart, checkoutSingleProduct } = useCart();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +45,11 @@ function CustomerDashboardPage() {
     };
     load();
   }, []);
+
+  const buyNow = (product) => {
+    checkoutSingleProduct(product, 1);
+    navigate("/payment");
+  };
 
   const addProductToCart = (product) => {
     addToCart(product, 1);
@@ -118,8 +123,11 @@ function CustomerDashboardPage() {
                 <p className="product-subtitle">{product.category_name || "Tech Essential"}</p>
                 <p className="product-price product-price-stack">TZS {product.price}</p>
                 <div className="product-card-actions">
-                  <button type="button" className="product-action-btn buy product-action-btn-full" onClick={() => addProductToCart(product)}>
-                    Add to cart
+                  <button type="button" className="product-action-btn product-action-btn-half" onClick={() => addProductToCart(product)}>
+                    Add Cart
+                  </button>
+                  <button type="button" className="product-action-btn buy product-action-btn-half" onClick={() => buyNow(product)}>
+                    Buy Now
                   </button>
                 </div>
               </div>
