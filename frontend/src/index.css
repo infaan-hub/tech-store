@@ -2158,6 +2158,32 @@ button:not(:disabled):hover {
   background: rgba(255, 255, 255, 0.48);
 }
 
+.product-detail-copy {
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+}
+
+.product-detail-copy h2 {
+  margin: 0;
+}
+
+.product-detail-meta {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.product-detail-category,
+.product-detail-stock,
+.product-detail-description {
+  margin: 0;
+  color: var(--muted);
+}
+
+.product-detail-description {
+  line-height: 1.65;
+}
+
 .product-detail-actions {
   display: flex;
   align-items: center;

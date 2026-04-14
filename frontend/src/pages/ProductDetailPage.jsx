@@ -69,11 +69,14 @@ function ProductDetailPage() {
           data-fallback-src={PRODUCT_PLACEHOLDER}
           onError={applyImageFallback}
         />
-        <div>
+        <div className="product-detail-copy">
           <h2>{product.name}</h2>
-          <p>{product.description || "No description available."}</p>
-          <p className="price">TZS {product.price}</p>
-          <p>Available stock: {product.quantity}</p>
+          <div className="product-detail-meta">
+            <p className="price">TZS {product.price}</p>
+            <p className="product-detail-category">Category: {product.category_name || "Tech Essential"}</p>
+            <p className="product-detail-stock">Available stock: {product.quantity}</p>
+          </div>
+          <p className="product-detail-description">{product.description || "No description available."}</p>
           <div className="product-detail-actions">
             <div className="quantity-stepper product-detail-stepper" aria-label={`Quantity for ${product.name}`}>
               <button type="button" onClick={reduceQty} disabled={selectedQty <= 1} aria-label="Reduce quantity">
