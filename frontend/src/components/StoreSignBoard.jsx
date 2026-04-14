@@ -1,14 +1,68 @@
+import { useEffect, useMemo, useState } from "react";
 import storeOpenSign from "../assets/store-open-sign.png";
 import storeClosedSign from "../assets/store-closed-sign.png";
 import { useStoreStatus } from "../context/StoreStatusContext.jsx";
 import { formatStoreDateTime } from "../lib/storeStatus.js";
 
+function formatDigitalTimeParts(date) {
+  return {
+    hours: String(date.getHours()).padStart(2, "0"),
+    minutes: String(date.getMinutes()).padStart(2, "0"),
+    seconds: String(date.getSeconds()).padStart(2, "0"),
+  };
+}
+
+function formatCountdownParts(milliseconds) {
+  const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return {
+    hours: String(hours).padStart(2, "0"),
+    minutes: String(minutes).padStart(2, "0"),
+    seconds: String(seconds).padStart(2, "0"),
+  };
+}
+
+function formatLongDate(date) {
+  return new Intl.DateTimeFormat(undefined, {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
 function StoreSignBoard() {
   const { storeStatus } = useStoreStatus();
+  const [now, setNow] = useState(() => new Date());
   const isOpen = Boolean(storeStatus?.effective_is_open ?? storeStatus?.is_open ?? true);
-  const nextChangeText = storeStatus?.next_change_at && storeStatus?.next_change_action
-    ? `${storeStatus.next_change_action === "open" ? "Opens" : "Closes"} ${formatStoreDateTime(storeStatus.next_change_at)}`
-    : "";
+  const nextChangeDate = useMemo(() => {
+    if (!storeStatus?.next_change_at) return null;
+    const parsed = new Date(storeStatus.next_change_at);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }, [storeStatus?.next_change_at]);
+  const hasCountdown = Boolean(nextChangeDate && nextChangeDate.getTime() > now.getTime());
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
+  const displayParts = hasCountdown
+    ? formatCountdownParts(nextChangeDate.getTime() - now.getTime())
+    : formatDigitalTimeParts(now);
+  const metaTitle = hasCountdown
+    ? `${storeStatus?.next_change_action === "open" ? "Open countdown" : "Close countdown"}`
+    : "Current time";
+  const statusLine = hasCountdown
+    ? `${storeStatus?.next_change_action === "open" ? "Opens" : "Closes"} ${formatStoreDateTime(storeStatus?.next_change_at)}`
+    : `${isOpen ? "Store open now" : "Store closed now"}`;
+  const dateLine = hasCountdown && nextChangeDate ? formatLongDate(nextChangeDate) : formatLongDate(now);
 
   return (
     <section className="store-sign-section" aria-label="Store status sign">
@@ -22,7 +76,23 @@ function StoreSignBoard() {
       <div className="store-sign-copy">
         <p className="auth-eyebrow">Store Time</p>
         <h3>{isOpen ? "TECH STORE IS OPEN" : "TECH STORE IS CLOSED"}</h3>
-        <p className="muted">{nextChangeText || "Manual and automatic store time updates appear here instantly."}</p>
+        <div className="store-clock-card" aria-label={metaTitle}>
+          <div className="store-clock-header">
+            <span>{hasCountdown ? "Countdown" : "Current"}</span>
+            <span className="store-clock-chip">{hasCountdown ? (storeStatus?.next_change_action === "open" ? "Until Open" : "Until Close") : "Live Time"}</span>
+          </div>
+          <div className="store-clock-digits" aria-live="polite">
+            <span>{displayParts.hours}</span>
+            <span className="store-clock-separator">:</span>
+            <span>{displayParts.minutes}</span>
+            <span className="store-clock-separator">:</span>
+            <span>{displayParts.seconds}</span>
+          </div>
+          <div className="store-clock-footer">
+            <span>{statusLine}</span>
+            <span>{dateLine}</span>
+          </div>
+        </div>
       </div>
     </section>
   );
