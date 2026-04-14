@@ -1418,7 +1418,7 @@ button:not(:disabled):hover {
 .quantity-stepper span {
   min-width: 1.8rem;
   text-align: center;
-  color: #ffffff;
+  color: #111111;
   font-weight: 900;
 }
 
