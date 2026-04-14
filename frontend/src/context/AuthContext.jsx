@@ -51,20 +51,29 @@ export function AuthProvider({ children }) {
   const loginByPath = useCallback(async (path, credentials) => {
     clearTokens();
     const loginRes = await authPostWithRetry(path, credentials);
+    const authenticatedUser = loginRes.data?.user || null;
     setTokens({
       access: loginRes.data.access,
       refresh: loginRes.data.refresh,
     });
+    if (authenticatedUser) {
+      setUser(authenticatedUser);
+      loadMe().catch(() => {});
+      return authenticatedUser;
+    }
+
     try {
       const meRes = await http.get("/api/auth/me/");
       setUser(meRes.data);
       return meRes.data;
     } catch (error) {
-      clearTokens();
-      setUser(null);
+      if (isAuthFailureStatus(error?.response?.status)) {
+        clearTokens();
+        setUser(null);
+      }
       throw error;
     }
-  }, []);
+  }, [loadMe]);
 
   const loginCustomer = useCallback((credentials) => loginByPath("/api/auth/login/", credentials), [loginByPath]);
   const loginAdmin = useCallback((credentials) => loginByPath("/api/auth/admin/login/", credentials), [loginByPath]);
