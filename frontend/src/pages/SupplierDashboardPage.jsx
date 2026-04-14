@@ -35,13 +35,18 @@ function SupplierDashboardPage() {
   });
 
   const load = async () => {
+    setError("");
     try {
       const response = await http.get("/api/supplier/dashboard/");
       setData(response.data);
     } catch (err) {
-      if ([401, 403].includes(err.response?.status)) {
+      if (err.response?.status === 401) {
         logout();
         navigate("/supplier/login", { replace: true });
+        return;
+      }
+      if (err.response?.status === 403) {
+        setError(err.response?.data?.detail || "Supplier access is outside the admin-approved schedule.");
         return;
       }
       setError(getApiErrorMessage(err, "Cannot load supplier dashboard."));

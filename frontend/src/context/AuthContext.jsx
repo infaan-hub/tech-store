@@ -12,6 +12,10 @@ const authHttp = axios.create({
 const SCHEDULED_ACCESS_ROLES = new Set(["supplier", "driver"]);
 const AUTH_RETRY_DELAY_MS = 1500;
 
+function isAuthFailureStatus(status) {
+  return status === 401 || status === 403;
+}
+
 async function authPostWithRetry(path, payload, config) {
   try {
     return await authHttp.post(path, payload, config);
@@ -34,9 +38,13 @@ export function AuthProvider({ children }) {
     try {
       const response = await http.get("/api/auth/me/");
       setUser(response.data);
-    } catch {
-      clearTokens();
-      setUser(null);
+      return response.data;
+    } catch (error) {
+      if (isAuthFailureStatus(error?.response?.status)) {
+        clearTokens();
+        setUser(null);
+      }
+      throw error;
     }
   }, []);
 
@@ -100,7 +108,11 @@ export function AuthProvider({ children }) {
         setLoading(false);
         return;
       }
-      await loadMe();
+      try {
+        await loadMe();
+      } catch {
+        // Keep the app responsive. Real auth failures are handled inside loadMe.
+      }
       setLoading(false);
     };
     init();
@@ -131,9 +143,11 @@ export function AuthProvider({ children }) {
     if (!user || !SCHEDULED_ACCESS_ROLES.has(user.role)) return undefined;
 
     const intervalId = window.setInterval(() => {
-      loadMe();
+      loadMe().catch(() => {});
     }, 30000);
-    const handleFocus = () => loadMe();
+    const handleFocus = () => {
+      loadMe().catch(() => {});
+    };
 
     window.addEventListener("focus", handleFocus);
 

@@ -69,9 +69,13 @@ function DriverDashboardPage() {
       const response = await http.get("/api/driver/dashboard/");
       setData(response.data);
     } catch (err) {
-      if ([401, 403].includes(err.response?.status)) {
+      if (err.response?.status === 401) {
         logout();
         navigate("/driver/login", { replace: true });
+        return;
+      }
+      if (err.response?.status === 403) {
+        setError(err.response?.data?.detail || "Driver access is outside the admin-approved schedule.");
         return;
       }
       setError(getApiErrorMessage(err, "Unable to load driver dashboard."));
