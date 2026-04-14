@@ -4,11 +4,16 @@ import storeClosedSign from "../assets/store-closed-sign.png";
 import { useStoreStatus } from "../context/StoreStatusContext.jsx";
 import { formatStoreDateTime } from "../lib/storeStatus.js";
 
-function formatDigitalTimeParts(date) {
+function formatDigitalTimeParts(date, hourMode) {
+  const rawHours = date.getHours();
+  const hoursValue = hourMode === "12"
+    ? ((rawHours % 12) || 12)
+    : rawHours;
   return {
-    hours: String(date.getHours()).padStart(2, "0"),
+    hours: String(hoursValue).padStart(2, "0"),
     minutes: String(date.getMinutes()).padStart(2, "0"),
     seconds: String(date.getSeconds()).padStart(2, "0"),
+    meridiem: hourMode === "12" ? (rawHours >= 12 ? "PM" : "AM") : "",
   };
 }
 
@@ -36,6 +41,7 @@ function formatLongDate(date) {
 function StoreSignBoard() {
   const { storeStatus } = useStoreStatus();
   const [now, setNow] = useState(() => new Date());
+  const [hourMode, setHourMode] = useState("24");
   const isOpen = Boolean(storeStatus?.effective_is_open ?? storeStatus?.is_open ?? true);
   const nextChangeDate = useMemo(() => {
     if (!storeStatus?.next_change_at) return null;
@@ -55,7 +61,7 @@ function StoreSignBoard() {
 
   const displayParts = hasCountdown
     ? formatCountdownParts(nextChangeDate.getTime() - now.getTime())
-    : formatDigitalTimeParts(now);
+    : formatDigitalTimeParts(now, hourMode);
   const metaTitle = hasCountdown
     ? `${storeStatus?.next_change_action === "open" ? "Open countdown" : "Close countdown"}`
     : "Current time";
@@ -79,7 +85,25 @@ function StoreSignBoard() {
         <div className="store-clock-card" aria-label={metaTitle}>
           <div className="store-clock-header">
             <span>{hasCountdown ? "Countdown" : "Current"}</span>
-            <span className="store-clock-chip">{hasCountdown ? (storeStatus?.next_change_action === "open" ? "Until Open" : "Until Close") : "Live Time"}</span>
+            <div className="store-clock-controls">
+              <span className="store-clock-chip">{hasCountdown ? (storeStatus?.next_change_action === "open" ? "Until Open" : "Until Close") : "Live Time"}</span>
+              <div className="store-clock-toggle" aria-label="Hour format switch">
+                <button
+                  type="button"
+                  className={hourMode === "12" ? "active" : ""}
+                  onClick={() => setHourMode("12")}
+                >
+                  12h
+                </button>
+                <button
+                  type="button"
+                  className={hourMode === "24" ? "active" : ""}
+                  onClick={() => setHourMode("24")}
+                >
+                  24h
+                </button>
+              </div>
+            </div>
           </div>
           <div className="store-clock-digits" aria-live="polite">
             <span>{displayParts.hours}</span>
@@ -87,6 +111,7 @@ function StoreSignBoard() {
             <span>{displayParts.minutes}</span>
             <span className="store-clock-separator">:</span>
             <span>{displayParts.seconds}</span>
+            {!hasCountdown && displayParts.meridiem ? <span className="store-clock-meridiem">{displayParts.meridiem}</span> : null}
           </div>
           <div className="store-clock-footer">
             <span>{statusLine}</span>
