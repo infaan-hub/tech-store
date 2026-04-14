@@ -97,6 +97,14 @@ function CustomerDashboardPage() {
               <button type="button" className="product-card-open" onClick={() => navigate(`/products/${product.id}`)}>
                 <span className="sr-only">Open {product.name}</span>
               </button>
+              <div className="product-card-topline">
+                <span className="product-card-badge">Tech Pick</span>
+                <span className="product-card-save" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M7 4.75h10a1.25 1.25 0 0 1 1.25 1.25v13.31a.44.44 0 0 1-.72.35L12 15.4l-5.53 4.26a.44.44 0 0 1-.72-.35V6A1.25 1.25 0 0 1 7 4.75Z" />
+                  </svg>
+                </span>
+              </div>
               <div className="card-image">
                 <img
                   src={toMediaUrl(product.image_url || product.image) || PRODUCT_PLACEHOLDER}
@@ -107,16 +115,11 @@ function CustomerDashboardPage() {
               </div>
               <div className="card-body">
                 <h3 className="product-title">{product.name}</h3>
-                <div className="product-meta-row">
-                  <span className="product-chip">{product.category_name || "General"}</span>
-                  <span className="product-price">TZS {product.price}</span>
-                </div>
+                <p className="product-subtitle">{product.category_name || "Tech Essential"}</p>
+                <p className="product-price product-price-stack">TZS {product.price}</p>
                 <div className="product-card-actions">
-                  <button type="button" className="product-action-btn buy" onClick={() => navigate(`/products/${product.id}`)}>
-                    View / Buy
-                  </button>
-                  <button type="button" className="product-action-btn" onClick={() => addProductToCart(product)}>
-                    Add Cart
+                  <button type="button" className="product-action-btn buy product-action-btn-full" onClick={() => addProductToCart(product)}>
+                    Add to cart
                   </button>
                 </div>
               </div>
