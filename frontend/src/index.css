@@ -98,8 +98,15 @@ body::before {
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(circle at top left, rgba(176, 137, 104, 0.16), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(127, 85, 57, 0.14), transparent 24%),
+    linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08)),
+    url("./assets/light-mode-background.jpg") center / cover no-repeat,
+    var(--bg);
+}
+
+:root[data-theme="dark"] body::before {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
+    url("./assets/dark-mode-background.jpg") center / cover no-repeat,
     var(--bg);
 }
 
