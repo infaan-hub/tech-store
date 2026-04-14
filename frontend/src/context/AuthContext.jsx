@@ -56,6 +56,11 @@ export function AuthProvider({ children }) {
       access: loginRes.data.access,
       refresh: loginRes.data.refresh,
     });
+    if (loginRes.data.access) {
+      const authorization = `Bearer ${loginRes.data.access}`;
+      http.defaults.headers.common.Authorization = authorization;
+      authHttp.defaults.headers.common.Authorization = authorization;
+    }
     if (authenticatedUser) {
       setUser(authenticatedUser);
       loadMe().catch(() => {});
@@ -86,6 +91,11 @@ export function AuthProvider({ children }) {
       access: response.data.access,
       refresh: response.data.refresh,
     });
+    if (response.data.access) {
+      const authorization = `Bearer ${response.data.access}`;
+      http.defaults.headers.common.Authorization = authorization;
+      authHttp.defaults.headers.common.Authorization = authorization;
+    }
     setUser(response.data.user);
     return response.data.user;
   }, []);
@@ -108,12 +118,24 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(() => {
     clearTokens();
+    delete http.defaults.headers.common.Authorization;
+    delete authHttp.defaults.headers.common.Authorization;
     setUser(null);
   }, []);
 
   useEffect(() => {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      const authorization = `Bearer ${accessToken}`;
+      http.defaults.headers.common.Authorization = authorization;
+      authHttp.defaults.headers.common.Authorization = authorization;
+    } else {
+      delete http.defaults.headers.common.Authorization;
+      delete authHttp.defaults.headers.common.Authorization;
+    }
+
     const init = async () => {
-      if (!getAccessToken()) {
+      if (!accessToken) {
         setLoading(false);
         return;
       }

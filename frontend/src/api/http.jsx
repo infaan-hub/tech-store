@@ -10,6 +10,11 @@ export const http = axios.create({
   timeout: 120000,
 });
 
+const storedAccessToken = getAccessToken();
+if (storedAccessToken) {
+  http.defaults.headers.common.Authorization = `Bearer ${storedAccessToken}`;
+}
+
 http.interceptors.request.use((config) => {
   const accessToken = getAccessToken();
   if (accessToken) {
@@ -58,10 +63,12 @@ http.interceptors.response.use(
           access: refreshRes.data.access,
           refresh: refreshRes.data.refresh || refreshToken,
         });
+        http.defaults.headers.common.Authorization = `Bearer ${refreshRes.data.access}`;
         originalRequest.headers.Authorization = `Bearer ${refreshRes.data.access}`;
         return http(originalRequest);
       } catch (refreshError) {
         clearTokens();
+        delete http.defaults.headers.common.Authorization;
         return Promise.reject(refreshError);
       }
     }
