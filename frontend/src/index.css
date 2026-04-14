@@ -39,45 +39,7 @@
   --icon-button-border: rgba(145, 228, 167, 0.46);
 }
 
-:root[data-theme="dark"] {
-  --bg: #b3b3b3;
-  --surface: rgba(46, 47, 48, 0.8);
-  --surface-strong: rgba(56, 57, 58, 0.92);
-  --surface-soft: rgba(41, 42, 43, 0.86);
-  --ink: #f5ede3;
-  --muted: #c9b8a6;
-  --line: rgba(221, 184, 146, 0.2);
-  --accent: #ddb892;
-  --accent-strong: #ede0d4;
-  --accent-soft: rgba(221, 184, 146, 0.22);
-  --ok: #9ad6a5;
-  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.34);
-  --shadow-card: 0 16px 34px rgba(0, 0, 0, 0.26);
-  --glass-border: rgba(115, 173, 130, 0.18);
-  --neo-highlight: rgba(140, 180, 230, 0.1);
-  --neo-shadow: rgba(2, 10, 28, 0.62);
-  --overlay: rgba(2, 10, 5, 0.55);
-  --field-border: rgba(221, 184, 146, 0.22);
-  --field-bg: rgba(45, 46, 47, 0.84);
-  --field-highlight: rgba(237, 224, 212, 0.08);
-  --panel-gradient: linear-gradient(180deg, rgba(58, 59, 60, 0.94), rgba(43, 44, 45, 0.9));
-  --sidebar-gradient: linear-gradient(180deg, rgba(55, 56, 57, 0.96), rgba(39, 40, 41, 0.92));
-  --ghost-gradient: linear-gradient(180deg, rgba(70, 62, 54, 0.92), rgba(49, 45, 41, 0.9));
-  --toggle-gradient: linear-gradient(180deg, rgba(78, 68, 58, 0.95), rgba(49, 45, 41, 0.92));
-  --hero-gradient: linear-gradient(135deg, rgba(79, 69, 60, 0.94), rgba(49, 45, 41, 0.88));
-  --order-bg: rgba(48, 49, 50, 0.8);
-  --form-bg: rgba(46, 47, 48, 0.56);
-  --glass-shell: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
-  --glass-shell-strong: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
-  --glass-pill: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
-  --glass-sheen: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.14) 48%, transparent 100%);
-  --glass-shadow: 0 24px 42px rgba(0, 0, 0, 0.26);
-  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.16);
-  --button-on-primary: #2d2118;
-  --button-on-soft: #f4e7db;
-  --icon-button-bg: linear-gradient(145deg, rgba(88, 78, 69, 0.96), rgba(58, 52, 47, 0.94));
-  --icon-button-border: rgba(221, 184, 146, 0.38);
-}
+:root[data-theme="dark"] {}
 
 * {
   box-sizing: border-box;
@@ -1069,10 +1031,13 @@ button:not(:disabled):hover {
 
 .ghost-btn {
   background: var(--ghost-gradient);
-  border-color: rgba(49, 123, 67, 0.34);
-  color: var(--button-on-soft);
+  border-color: rgba(145, 228, 167, 0.46);
+  color: #f4fff6;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 14px 28px rgba(0, 0, 0, 0.28);
 }
 
 .danger-btn {
@@ -1293,10 +1258,10 @@ button:not(:disabled):hover {
 .cart-remove-btn {
   min-height: 2.35rem;
   padding: 0.45rem 0.78rem;
-  border: 1px solid rgba(48, 54, 59, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
-  color: #30363b;
-  background: rgba(48, 54, 59, 0.07);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
   font: inherit;
   font-weight: 800;
   cursor: pointer;
@@ -1374,7 +1339,7 @@ button:not(:disabled):hover {
   border: 0;
   padding: 0;
   border-radius: 0;
-  color: #1f2937;
+  color: #eef2f7;
   background: transparent;
   box-shadow: none;
 }
@@ -1533,10 +1498,10 @@ button:not(:disabled):hover {
   justify-items: center;
   gap: 0.45rem;
   padding: 0.58rem 0.7rem;
-  border: 1px solid rgba(148, 163, 184, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
-  color: #5b6470;
-  background: #f8fafc;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
   font-weight: 800;
   text-align: center;
   cursor: pointer;
