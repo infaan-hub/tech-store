@@ -98,10 +98,16 @@ function CustomerDashboardPage() {
         </div>
         <div className="grid-products product-grid customer-product-grid">
           {products.map((product) => (
-            <article className="product-card customer-product-card" key={product.id}>
-              <button type="button" className="product-card-open" onClick={() => navigate(`/products/${product.id}`)}>
-                <span className="sr-only">Open {product.name}</span>
-              </button>
+            <article
+              className="product-card customer-product-card"
+              key={product.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/products/${product.id}`)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") navigate(`/products/${product.id}`);
+              }}
+            >
               <div className="product-card-topline">
                 <span className="product-card-badge">Tech Pick</span>
                 <span className="product-card-save" aria-hidden="true">
@@ -124,10 +130,10 @@ function CustomerDashboardPage() {
                 <p className="product-subtitle">{product.category_name || "Tech Essential"}</p>
                 <p className="product-price product-price-stack">TZS {product.price}</p>
                 <div className="product-card-actions">
-                  <button type="button" className="product-action-btn product-action-btn-half" onClick={() => addProductToCart(product)}>
+                  <button type="button" className="product-action-btn product-action-btn-half" onClick={(event) => { event.stopPropagation(); addProductToCart(product); }}>
                     Add Cart
                   </button>
-                  <button type="button" className="product-action-btn buy product-action-btn-half" onClick={() => buyNow(product)}>
+                  <button type="button" className="product-action-btn buy product-action-btn-half" onClick={(event) => { event.stopPropagation(); buyNow(product); }}>
                     Buy Now
                   </button>
                 </div>
