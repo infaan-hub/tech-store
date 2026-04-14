@@ -1,5 +1,5 @@
-import storeOpenSign from "../assets/store-open-sign.jpg";
-import storeClosedSign from "../assets/store-closed-sign.jpg";
+import storeOpenSign from "../assets/store-open-sign.png";
+import storeClosedSign from "../assets/store-closed-sign.png";
 import { useStoreStatus } from "../context/StoreStatusContext.jsx";
 import { formatStoreDateTime } from "../lib/storeStatus.js";
 
