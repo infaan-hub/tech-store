@@ -120,6 +120,7 @@ function CustomerDashboardPage() {
               </div>
               <div className="card-body">
                 <h3 className="product-title">{product.name}</h3>
+                <p className="product-card-description">{product.description || "Trusted tech ready for quick order."}</p>
                 <p className="product-subtitle">{product.category_name || "Tech Essential"}</p>
                 <p className="product-price product-price-stack">TZS {product.price}</p>
                 <div className="product-card-actions">
