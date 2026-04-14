@@ -1,5 +1,5 @@
 const FALLBACK_DEV_API_BASE_URL = "http://127.0.0.1:8000";
-const FALLBACK_PROD_API_BASE_URL = "http://127.0.0.1:8000";
+const FALLBACK_PROD_API_BASE_URL = "https://tech-store-oi61.onrender.com";
 
 const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 
