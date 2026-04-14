@@ -3,10 +3,13 @@ import { Link, useLocation, useNavigate, useSearchParams } from "react-router-do
 import productPlaceholder from "../assets/product-placeholder.svg";
 import { http } from "../api/http.jsx";
 import StoreQrCard from "../components/StoreQrCard.jsx";
+import StoreSignBoard from "../components/StoreSignBoard.jsx";
 import { useCart } from "../context/CartContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useStoreStatus } from "../context/StoreStatusContext.jsx";
 import { getApiErrorMessage } from "../lib/apiErrors.js";
 import { applyImageFallback, toMediaUrl } from "../lib/media.jsx";
+import { buildStoreClosedMessage } from "../lib/storeStatus.js";
 
 const PRODUCT_PLACEHOLDER = productPlaceholder;
 const HOME_AUTO_RETRY_MS = 6000;
@@ -22,6 +25,7 @@ function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { isAuthenticated } = useAuth();
+  const { storeStatus } = useStoreStatus();
   const { addToCart, checkoutSingleProduct } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,6 +101,10 @@ function HomePage() {
   };
 
   const openProduct = (productId) => {
+    if (storeStatus && storeStatus.effective_is_open === false) {
+      alert(buildStoreClosedMessage(storeStatus));
+      return;
+    }
     if (!isAuthenticated) {
       alert("Please login first to open product details.");
       navigate("/login", { state: { from: `/products/${productId}` } });
@@ -108,6 +116,11 @@ function HomePage() {
   const buyNow = (event, product) => {
     event.stopPropagation();
     event.preventDefault();
+
+    if (storeStatus && storeStatus.effective_is_open === false) {
+      alert(buildStoreClosedMessage(storeStatus));
+      return;
+    }
 
     if (!isAuthenticated) {
       navigate("/login", { state: { from: `/products/${product.id}` } });
@@ -121,6 +134,10 @@ function HomePage() {
   const addProductToCart = (event, product) => {
     event.stopPropagation();
     event.preventDefault();
+    if (storeStatus && storeStatus.effective_is_open === false) {
+      alert(buildStoreClosedMessage(storeStatus));
+      return;
+    }
     addToCart(product, 1);
     navigate("/cart");
   };
@@ -296,6 +313,9 @@ function HomePage() {
         ))}
       </div>
       {!loading && !visibleProducts.length ? <p className="muted">No products match your search.</p> : null}
+      <div className="dashboard-section">
+        <StoreSignBoard />
+      </div>
       <section className="about-home-section" aria-labelledby="about-us-title">
         <div className="about-home-card">
           <div className="about-home-copy">

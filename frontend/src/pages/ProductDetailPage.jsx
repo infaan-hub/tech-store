@@ -3,8 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import productPlaceholder from "../assets/product-placeholder.svg";
 import { http } from "../api/http.jsx";
 import { useCart } from "../context/CartContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { useStoreStatus } from "../context/StoreStatusContext.jsx";
 import { getApiErrorMessage } from "../lib/apiErrors.js";
 import { applyImageFallback, toMediaUrl } from "../lib/media.jsx";
+import { buildStoreClosedMessage } from "../lib/storeStatus.js";
 
 const PRODUCT_PLACEHOLDER = productPlaceholder;
 
@@ -15,6 +18,8 @@ function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [slowLoading, setSlowLoading] = useState(false);
   const [error, setError] = useState("");
+  const { user } = useAuth();
+  const { storeStatus } = useStoreStatus();
   const { addToCart, checkoutSingleProduct } = useCart();
   const navigate = useNavigate();
 
@@ -53,6 +58,10 @@ function ProductDetailPage() {
   };
 
   const buyNow = () => {
+    if (user?.role === "customer" && storeStatus && storeStatus.effective_is_open === false) {
+      alert(buildStoreClosedMessage(storeStatus));
+      return;
+    }
     checkoutSingleProduct(product, selectedQty);
     navigate("/payment");
   };
@@ -91,6 +100,10 @@ function ProductDetailPage() {
               type="button"
               className="primary-btn"
               onClick={() => {
+                if (user?.role === "customer" && storeStatus && storeStatus.effective_is_open === false) {
+                  alert(buildStoreClosedMessage(storeStatus));
+                  return;
+                }
                 addToCart(product, selectedQty);
                 navigate("/cart");
               }}

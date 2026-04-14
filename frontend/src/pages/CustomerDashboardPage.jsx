@@ -3,8 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import productPlaceholder from "../assets/product-placeholder.svg";
 import { http } from "../api/http.jsx";
 import StoreQrCard from "../components/StoreQrCard.jsx";
+import StoreSignBoard from "../components/StoreSignBoard.jsx";
 import { useCart } from "../context/CartContext.jsx";
+import { useStoreStatus } from "../context/StoreStatusContext.jsx";
 import { applyImageFallback, toMediaUrl } from "../lib/media.jsx";
+import { buildStoreClosedMessage } from "../lib/storeStatus.js";
 
 const PRODUCT_PLACEHOLDER = productPlaceholder;
 
@@ -22,6 +25,7 @@ function CustomerDashboardPage() {
   const [deletingOrderId, setDeletingOrderId] = useState(null);
   const [clearingOrders, setClearingOrders] = useState(false);
   const [error, setError] = useState("");
+  const { storeStatus } = useStoreStatus();
   const { addToCart, checkoutSingleProduct } = useCart();
   const navigate = useNavigate();
 
@@ -47,11 +51,19 @@ function CustomerDashboardPage() {
   }, []);
 
   const buyNow = (product) => {
+    if (storeStatus && storeStatus.effective_is_open === false) {
+      alert(buildStoreClosedMessage(storeStatus));
+      return;
+    }
     checkoutSingleProduct(product, 1);
     navigate("/payment");
   };
 
   const addProductToCart = (product) => {
+    if (storeStatus && storeStatus.effective_is_open === false) {
+      alert(buildStoreClosedMessage(storeStatus));
+      return;
+    }
     addToCart(product, 1);
     navigate("/cart");
   };
@@ -89,6 +101,9 @@ function CustomerDashboardPage() {
       <h2>Customer Dashboard</h2>
       {error ? <p className="error">{error}</p> : null}
       <div className="dashboard-section">
+        <StoreSignBoard />
+      </div>
+      <div className="dashboard-section">
         <div className="section-heading-row">
           <div>
             <h3 id="customer-products" className="section-title">Shop Products</h3>
@@ -103,9 +118,21 @@ function CustomerDashboardPage() {
               key={product.id}
               role="button"
               tabIndex={0}
-              onClick={() => navigate(`/products/${product.id}`)}
+              onClick={() => {
+                if (storeStatus && storeStatus.effective_is_open === false) {
+                  alert(buildStoreClosedMessage(storeStatus));
+                  return;
+                }
+                navigate(`/products/${product.id}`);
+              }}
               onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") navigate(`/products/${product.id}`);
+                if (event.key === "Enter" || event.key === " ") {
+                  if (storeStatus && storeStatus.effective_is_open === false) {
+                    alert(buildStoreClosedMessage(storeStatus));
+                    return;
+                  }
+                  navigate(`/products/${product.id}`);
+                }
               }}
             >
               <div className="product-card-topline">

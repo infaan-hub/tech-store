@@ -21,6 +21,7 @@ function MainNav({ theme, onToggleTheme }) {
     { to: "/customer/dashboard", label: "Dashboard", show: user?.role === "customer" },
     { to: "/admin/dashboard", label: "Admin Dashboard", show: user?.role === "admin" },
     { to: "/schedule-task", label: "Schedule Task", show: user?.role === "admin" },
+    { to: "/store-time", label: "Store Time", show: user?.role === "admin" || user?.role === "supplier" },
     { to: "/supplier/dashboard", label: "Supplier Dashboard", show: user?.role === "supplier" },
     { to: "/supplier/dashboard/scan", label: "Supplier Scanner", show: user?.role === "supplier" },
     { to: "/supplier/calculator", label: "Supplier Calculator", show: user?.role === "supplier" },

@@ -157,6 +157,27 @@ class CustomUser(AbstractUser):
         self.profile_image_content_type = ""
 
 
+class StoreStatus(models.Model):
+    is_open = models.BooleanField(default=True)
+    scheduled_open_at = models.DateTimeField(null=True, blank=True)
+    scheduled_close_at = models.DateTimeField(null=True, blank=True)
+    updated_by = models.ForeignKey(
+        CustomUser,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="store_status_updates",
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
+
+    class Meta:
+        ordering = ["-updated_at"]
+
+    def __str__(self):
+        return "Store Status"
+
+
 # ================================
 # Category Model
 # ================================

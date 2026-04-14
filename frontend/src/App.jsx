@@ -4,6 +4,7 @@ import MainNav from "./components/MainNav.jsx";
 import RoleRoute from "./components/RoleRoute.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
+import { StoreStatusProvider } from "./context/StoreStatusContext.jsx";
 import AdminDashboardPage from "./pages/AdminDashboardPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
 import CustomerDashboardPage from "./pages/CustomerDashboardPage.jsx";
@@ -18,6 +19,7 @@ import SupplierDashboardPage from "./pages/SupplierDashboardPage.jsx";
 import SupplierCalculatorPage from "./pages/SupplierCalculatorPage.jsx";
 import SupplierScanPage from "./pages/SupplierScanPage.jsx";
 import ScheduleTaskPage from "./pages/ScheduleTaskPage.jsx";
+import StoreTimePage from "./pages/StoreTimePage.jsx";
 
 function AppLayout() {
   const [theme, setTheme] = useState(() => {
@@ -147,6 +149,14 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/store-time"
+          element={
+            <RoleRoute roles={["admin", "supplier"]}>
+              <StoreTimePage />
+            </RoleRoute>
+          }
+        />
+        <Route
           path="/driver/dashboard"
           element={
             <RoleRoute roles={["driver"]}>
@@ -163,11 +173,13 @@ function AppRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </CartProvider>
+      <StoreStatusProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </CartProvider>
+      </StoreStatusProvider>
     </AuthProvider>
   );
 }

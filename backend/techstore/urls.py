@@ -16,6 +16,7 @@ router.register('payments', PaymentViewSet)
 
 urlpatterns = [
     path('health/', HealthCheckView.as_view(), name='health_check'),
+    path('store-time/', StoreStatusView.as_view(), name='store_time'),
     path('auth/login/', CustomerLoginView.as_view(), name='customer_login'),
     path('auth/google/', CustomerGoogleLoginView.as_view(), name='customer_google_login'),
     path('auth/admin/login/', AdminLoginView.as_view(), name='admin_login'),

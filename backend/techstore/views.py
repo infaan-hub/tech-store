@@ -27,6 +27,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from .models import Category, Customer, Payment, Product, Sale, SaleItem, StockMovement, Supplier
+from .models import StoreStatus
 from .serializers import (
     AdminCreateUserSerializer,
     AdminRegisterSerializer,
@@ -41,6 +42,7 @@ from .serializers import (
     SaleItemSerializer,
     SaleSerializer,
     StockSerializer,
+    StoreStatusSerializer,
     SupplierSerializer,
     ScheduledAccessSerializer,
     UserSerializer,
@@ -208,6 +210,43 @@ def enforce_scheduled_access_or_raise(user):
     if user_has_active_scheduled_access(user):
         return
     raise exceptions.PermissionDenied(scheduled_access_denial_detail(user))
+
+
+def get_store_status_record():
+    return StoreStatus.objects.order_by("id").first() or StoreStatus.objects.create(is_open=True)
+
+
+def resolve_store_status(store_status, *, at_time=None, persist=False):
+    current_time = at_time or timezone.now()
+    effective_is_open = bool(store_status.is_open)
+    future_events = []
+    consumed_fields = []
+
+    scheduled_events = []
+    if store_status.scheduled_open_at:
+        scheduled_events.append((store_status.scheduled_open_at, True, "scheduled_open_at", "open"))
+    if store_status.scheduled_close_at:
+        scheduled_events.append((store_status.scheduled_close_at, False, "scheduled_close_at", "close"))
+
+    for event_time, next_state, field_name, action_name in sorted(scheduled_events, key=lambda item: item[0]):
+        if event_time <= current_time:
+            effective_is_open = next_state
+            consumed_fields.append(field_name)
+        else:
+            future_events.append((event_time, action_name))
+
+    if persist and consumed_fields:
+        update_fields = ["is_open", "updated_at"]
+        store_status.is_open = effective_is_open
+        for field_name in consumed_fields:
+            if getattr(store_status, field_name, None) is not None:
+                setattr(store_status, field_name, None)
+                update_fields.append(field_name)
+        store_status.save(update_fields=list(dict.fromkeys(update_fields)))
+
+    next_change_at = future_events[0][0] if future_events else None
+    next_change_action = future_events[0][1] if future_events else ""
+    return effective_is_open, next_change_at, next_change_action
 
 
 def build_whatsapp_order_url(sale, payment, sale_items):
@@ -1764,6 +1803,49 @@ class HealthCheckView(APIView):
         except DatabaseError:
             logger.exception("Health check failed because the database is unavailable.")
             return Response({"status": "error", "database": "unavailable"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+
+class StoreStatusView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.AllowAny]
+
+    def get_authenticators(self):
+        if self.request.method == "GET":
+            return []
+        return super().get_authenticators()
+
+    def get(self, request):
+        try:
+            store_status = get_store_status_record()
+            effective_is_open, next_change_at, next_change_action = resolve_store_status(store_status, persist=True)
+            serializer = StoreStatusSerializer(store_status, context={"request": request})
+            data = dict(serializer.data)
+            data["effective_is_open"] = effective_is_open
+            data["next_change_at"] = next_change_at.isoformat() if next_change_at else None
+            data["next_change_action"] = next_change_action
+            return Response(data, status=status.HTTP_200_OK)
+        except DatabaseError:
+            return Response({"detail": "Store time status is temporarily unavailable."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+    def patch(self, request):
+        try:
+            user = getattr(request, "user", None)
+            if not (user and user.is_authenticated and user.role in ("admin", "supplier")):
+                return Response({"detail": "Only admin or supplier can manage store time."}, status=status.HTTP_403_FORBIDDEN)
+
+            store_status = get_store_status_record()
+            serializer = StoreStatusSerializer(store_status, data=request.data, partial=True, context={"request": request})
+            serializer.is_valid(raise_exception=True)
+            updated_store_status = serializer.save(updated_by=user)
+
+            effective_is_open, next_change_at, next_change_action = resolve_store_status(updated_store_status, persist=True)
+            data = dict(StoreStatusSerializer(updated_store_status, context={"request": request}).data)
+            data["effective_is_open"] = effective_is_open
+            data["next_change_at"] = next_change_at.isoformat() if next_change_at else None
+            data["next_change_action"] = next_change_action
+            return Response(data, status=status.HTTP_200_OK)
+        except DatabaseError:
+            return Response({"detail": "Store time update is temporarily unavailable."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
 class ScheduledAccessListView(APIView):

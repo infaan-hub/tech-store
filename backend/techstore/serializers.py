@@ -7,7 +7,7 @@ from django.db import transaction
 from django.urls import reverse
 from reportlab.graphics.barcode import createBarcodeDrawing
 from rest_framework import serializers
-from .models import Category, Customer, Payment, Product, Sale, SaleItem, StockMovement, Supplier
+from .models import Category, Customer, Payment, Product, Sale, SaleItem, StockMovement, StoreStatus, Supplier
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -334,6 +334,50 @@ class ScheduledAccessSerializer(serializers.ModelSerializer):
         instance.access_window_end = validated_data.get("access_window_end", instance.access_window_end)
         instance.save(update_fields=["access_window_start", "access_window_end", "updated_at"])
         return instance
+
+
+class StoreStatusSerializer(serializers.ModelSerializer):
+    effective_is_open = serializers.BooleanField(read_only=True)
+    next_change_at = serializers.DateTimeField(read_only=True)
+    next_change_action = serializers.CharField(read_only=True)
+    updated_by_name = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = StoreStatus
+        fields = (
+            "id",
+            "is_open",
+            "scheduled_open_at",
+            "scheduled_close_at",
+            "effective_is_open",
+            "next_change_at",
+            "next_change_action",
+            "updated_at",
+            "updated_by",
+            "updated_by_name",
+        )
+        read_only_fields = (
+            "id",
+            "effective_is_open",
+            "next_change_at",
+            "next_change_action",
+            "updated_at",
+            "updated_by",
+            "updated_by_name",
+        )
+
+    def validate(self, attrs):
+        scheduled_open_at = attrs.get("scheduled_open_at", getattr(self.instance, "scheduled_open_at", None))
+        scheduled_close_at = attrs.get("scheduled_close_at", getattr(self.instance, "scheduled_close_at", None))
+        if scheduled_open_at and scheduled_close_at and scheduled_open_at == scheduled_close_at:
+            raise serializers.ValidationError({"detail": "Scheduled open and close times cannot be identical."})
+        return attrs
+
+    def get_updated_by_name(self, obj):
+        updated_by = getattr(obj, "updated_by", None)
+        if not updated_by:
+            return ""
+        return updated_by.full_name or updated_by.username
 
 
 class CategorySerializer(serializers.ModelSerializer):
