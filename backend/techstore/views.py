@@ -1531,7 +1531,7 @@ class ProductViewSet(viewsets.ModelViewSet):
             supplier = Supplier.objects.filter(user=self.request.user).first()
             if not supplier:
                 raise exceptions.PermissionDenied("Supplier profile is missing.")
-            serializer.save(supplier=supplier)
+            serializer.save(supplier=supplier, is_active=True)
             return
         if self.request.user.role != "admin":
             raise exceptions.PermissionDenied("Only admin or supplier can create products.")
