@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useSearchParams } from "react-router-do
 import productPlaceholder from "../assets/product-placeholder.svg";
 import { http } from "../api/http.jsx";
 import StoreQrCard from "../components/StoreQrCard.jsx";
+import { useCart } from "../context/CartContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { getApiErrorMessage } from "../lib/apiErrors.js";
 import { applyImageFallback, toMediaUrl } from "../lib/media.jsx";
@@ -21,6 +22,7 @@ function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { isAuthenticated } = useAuth();
+  const { addToCart, checkoutSingleProduct } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -103,6 +105,26 @@ function HomePage() {
     navigate(`/products/${productId}`);
   };
 
+  const buyNow = (event, product) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (!isAuthenticated) {
+      navigate("/login", { state: { from: `/products/${product.id}` } });
+      return;
+    }
+
+    checkoutSingleProduct(product, 1);
+    navigate("/payment");
+  };
+
+  const addProductToCart = (event, product) => {
+    event.stopPropagation();
+    event.preventDefault();
+    addToCart(product, 1);
+    navigate("/cart");
+  };
+
   const aboutLinks = [
     {
       label: "WhatsApp",
@@ -142,8 +164,8 @@ function HomePage() {
 
   return (
     <section className="page-wrap">
-      <header className="marketplace-return" aria-label="Marketplace quick actions">
-        <h1>Marketplace</h1>
+      <header className="marketplace-return" aria-label="Marketstore quick actions">
+        <h1>Marketstore</h1>
         <div className="marketplace-actions">
           <button
             type="button"
@@ -254,7 +276,20 @@ function HomePage() {
               <p className="product-subtitle">{product.category_name || "Tech Essential"}</p>
               <p className="product-price product-price-stack">TZS {product.price}</p>
               <div className="product-card-actions">
-                <span className="product-action-btn buy product-action-btn-full product-action-btn-static">View details</span>
+                {isAuthenticated ? (
+                  <>
+                    <button type="button" className="product-action-btn product-action-btn-half" onClick={(event) => addProductToCart(event, product)}>
+                      Add Cart
+                    </button>
+                    <button type="button" className="product-action-btn buy product-action-btn-half" onClick={(event) => buyNow(event, product)}>
+                      Buy Now
+                    </button>
+                  </>
+                ) : (
+                  <button type="button" className="product-action-btn buy product-action-btn-full" onClick={(event) => buyNow(event, product)}>
+                    Buy Now
+                  </button>
+                )}
               </div>
             </div>
           </article>

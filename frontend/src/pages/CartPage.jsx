@@ -28,7 +28,7 @@ function CartPage() {
               <p className="cart-product-kicker">{item.product.category_name || "Product"}</p>
               <h3>{item.product.name}</h3>
               <p className="cart-product-description">
-                {item.product.description || "Fresh marketplace product ready for your cart."}
+                {item.product.description || "Fresh marketstore product ready for your cart."}
               </p>
               <p className="cart-product-price">TZS {(Number(item.product.price) * item.quantity).toFixed(2)}</p>
             </div>

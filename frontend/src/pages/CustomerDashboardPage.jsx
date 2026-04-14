@@ -87,7 +87,7 @@ function CustomerDashboardPage() {
         <div className="section-heading-row">
           <div>
             <h3 id="customer-products" className="section-title">Shop Products</h3>
-            <p className="muted">All marketplace products are unlocked for your customer account.</p>
+            <p className="muted">All marketstore products are unlocked for your customer account.</p>
           </div>
           <Link className="ghost-btn" to="/cart">Open Cart</Link>
         </div>

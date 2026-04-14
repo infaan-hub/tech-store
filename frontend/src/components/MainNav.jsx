@@ -50,7 +50,7 @@ function MainNav({ theme, onToggleTheme }) {
           <span />
         </button>
         <Link to="/home" className="brand">
-          Tech store
+          TECH STORE
         </Link>
       </header>
 
