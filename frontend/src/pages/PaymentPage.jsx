@@ -304,7 +304,7 @@ function PaymentPage() {
         total: snapshotTotal.toFixed(2),
         dateTime: new Date(payment.created_at || sale.created_at || Date.now()).toLocaleString(),
         productName: firstProduct?.name || "Marketplace Product",
-        productImageUrl: toMediaUrl(firstProduct?.image_url || firstProduct?.image),
+        productImageUrl: firstProduct?.image_data_url || toMediaUrl(firstProduct?.image_url || firstProduct?.image),
         barcodeImageUrl: payment.barcode_image_url,
         gateway,
         gatewayLabel: gatewayMeta.label,

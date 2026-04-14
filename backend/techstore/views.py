@@ -1364,6 +1364,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     parser_classes = [MultiPartParser, FormParser]
 
+    def get_authenticators(self):
+        if getattr(self, "action", None) in ("list", "retrieve", "image"):
+            return []
+        return super().get_authenticators()
+
     def get_permissions(self):
         if self.action in ("list", "retrieve", "image"):
             return [permissions.AllowAny()]

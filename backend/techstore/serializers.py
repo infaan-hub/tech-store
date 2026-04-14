@@ -365,6 +365,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category_id = serializers.IntegerField(source="category.id", read_only=True)
     image = serializers.ImageField(required=False, allow_null=True, write_only=True)
     image_url = serializers.SerializerMethodField()
+    image_data_url = serializers.SerializerMethodField()
     category_name = serializers.SerializerMethodField()
 
     class Meta:
@@ -383,6 +384,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "barcode",
             "image",
             "image_url",
+            "image_data_url",
             "description",
             "is_active",
             "created_at",
@@ -466,6 +468,9 @@ class ProductSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         return product_image_url(obj, request)
 
+    def get_image_data_url(self, obj):
+        return binary_file_data_url(obj.image_data, obj.image_content_type)
+
     def get_category_name(self, obj):
         return getattr(obj.category, "name", None)
 
@@ -473,6 +478,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class PublicProductSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
+    image_data_url = serializers.SerializerMethodField()
     category_name = serializers.SerializerMethodField()
 
     class Meta:
@@ -485,6 +491,7 @@ class PublicProductSerializer(serializers.ModelSerializer):
             "quantity",
             "image",
             "image_url",
+            "image_data_url",
             "description",
             "category_name",
             "updated_at",
@@ -497,6 +504,9 @@ class PublicProductSerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         request = self.context.get("request")
         return product_image_url(obj, request)
+
+    def get_image_data_url(self, obj):
+        return binary_file_data_url(obj.image_data, obj.image_content_type)
 
     def get_category_name(self, obj):
         return getattr(obj.category, "name", None)

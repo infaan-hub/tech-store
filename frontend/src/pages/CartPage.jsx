@@ -18,7 +18,7 @@ function CartPage() {
           <article className="cart-product-card" key={item.product.id}>
             <div className="cart-product-image">
               <img
-                src={toMediaUrl(item.product.image_url || item.product.image) || PRODUCT_PLACEHOLDER}
+                src={item.product.image_data_url || toMediaUrl(item.product.image_url || item.product.image) || PRODUCT_PLACEHOLDER}
                 alt={item.product.name}
                 data-fallback-src={PRODUCT_PLACEHOLDER}
                 onError={applyImageFallback}

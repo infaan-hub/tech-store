@@ -243,7 +243,7 @@ function HomePage() {
             </div>
             <div className="card-image">
               <img
-                src={toMediaUrl(product.image_url || product.image) || PRODUCT_PLACEHOLDER}
+                src={product.image_data_url || toMediaUrl(product.image_url || product.image) || PRODUCT_PLACEHOLDER}
                 alt={product.name}
                 data-fallback-src={PRODUCT_PLACEHOLDER}
                 onError={applyImageFallback}

@@ -64,7 +64,7 @@ function ProductDetailPage() {
     <section className="page-wrap">
       <div className="product-detail">
         <img
-          src={toMediaUrl(product.image_url || product.image) || PRODUCT_PLACEHOLDER}
+          src={product.image_data_url || toMediaUrl(product.image_url || product.image) || PRODUCT_PLACEHOLDER}
           alt={product.name}
           data-fallback-src={PRODUCT_PLACEHOLDER}
           onError={applyImageFallback}
