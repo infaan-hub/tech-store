@@ -23,7 +23,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenRefreshView
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from .models import Category, Customer, Payment, Product, Sale, SaleItem, StockMovement, Supplier
 from .serializers import (
     AdminCreateUserSerializer,
@@ -1143,6 +1144,41 @@ def authenticate_with_identifier(request, identifier, password):
     return None
 
 
+def _bearer_token_from_request(request):
+    authorization = str(request.headers.get("Authorization") or "").strip()
+    if not authorization:
+        return ""
+    parts = authorization.split(None, 1)
+    if len(parts) != 2 or parts[0].lower() != "bearer":
+        return ""
+    return parts[1].strip()
+
+
+def authenticated_role_user_or_response(request, expected_role):
+    user = getattr(request, "user", None)
+    if not (user and getattr(user, "is_authenticated", False)):
+        raw_token = _bearer_token_from_request(request)
+        if not raw_token:
+            return None, Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            token = AccessToken(raw_token)
+        except TokenError:
+            return None, Response({"detail": "Token is invalid or expired."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user_id = token.get("user_id") or token.get("user")
+        user = User.objects.filter(id=user_id).first()
+        if not user:
+            return None, Response({"detail": "User not found for this token."}, status=status.HTTP_401_UNAUTHORIZED)
+
+    if not getattr(user, "is_active", False):
+        return None, Response({"detail": "This account is inactive."}, status=status.HTTP_403_FORBIDDEN)
+    if getattr(user, "role", None) != expected_role:
+        return None, Response({"detail": f"Only {expected_role} can access this endpoint."}, status=status.HTTP_403_FORBIDDEN)
+    if not user_has_active_scheduled_access(user):
+        return None, Response({"detail": scheduled_access_denial_detail(user)}, status=status.HTTP_403_FORBIDDEN)
+    return user, None
+
+
 class RoleLoginView(APIView):
     permission_classes = [permissions.AllowAny]
     required_role = None
@@ -2026,11 +2062,14 @@ def _auto_assign_sale_to_sole_driver(sale):
 
 class SupplierDashboardView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated, IsSupplierRole]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request):
         try:
-            supplier = Supplier.objects.filter(user=request.user).first()
+            user, auth_error = authenticated_role_user_or_response(request, "supplier")
+            if auth_error:
+                return auth_error
+            supplier = Supplier.objects.filter(user=user).first()
             if not supplier:
                 return Response({"detail": "Supplier profile not found."}, status=status.HTTP_404_NOT_FOUND)
             products = Product.objects.filter(supplier=supplier)
@@ -2066,11 +2105,14 @@ class SupplierDashboardView(APIView):
 
 class SupplierAlertsView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated, IsSupplierRole]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request):
         try:
-            supplier = Supplier.objects.filter(user=request.user).first()
+            user, auth_error = authenticated_role_user_or_response(request, "supplier")
+            if auth_error:
+                return auth_error
+            supplier = Supplier.objects.filter(user=user).first()
             if not supplier:
                 return Response({"detail": "Supplier profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -2103,15 +2145,18 @@ class SupplierAlertsView(APIView):
 
 class DriverDashboardView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated, IsDriverRole]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request):
         try:
-            _auto_assign_ready_sales_to_sole_driver(request.user)
-            sales = _driver_active_deliveries_queryset(request.user)
+            user, auth_error = authenticated_role_user_or_response(request, "driver")
+            if auth_error:
+                return auth_error
+            _auto_assign_ready_sales_to_sole_driver(user)
+            sales = _driver_active_deliveries_queryset(user)
             return Response(
                 {
-                    "driver": serialize_or_raise(UserSerializer, request.user, context={"request": request}),
+                    "driver": serialize_or_raise(UserSerializer, user, context={"request": request}),
                     "active_deliveries": serialize_or_raise(
                         SaleSerializer,
                         sales,
@@ -2130,12 +2175,15 @@ class DriverDashboardView(APIView):
 
 class DriverAlertsView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated, IsDriverRole]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request):
         try:
-            _auto_assign_ready_sales_to_sole_driver(request.user)
-            sales = _driver_active_deliveries_queryset(request.user).order_by("-created_at")[:25]
+            user, auth_error = authenticated_role_user_or_response(request, "driver")
+            if auth_error:
+                return auth_error
+            _auto_assign_ready_sales_to_sole_driver(user)
+            sales = _driver_active_deliveries_queryset(user).order_by("-created_at")[:25]
             alerts = [
                 {
                     "id": sale.id,
@@ -2164,11 +2212,14 @@ class DriverAlertsView(APIView):
 
 class DriverUpdateDeliveryView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated, IsDriverRole]
+    permission_classes = [permissions.AllowAny]
 
     def patch(self, request, sale_id):
         try:
-            sale = Sale.objects.filter(id=sale_id, assigned_driver=request.user).first()
+            user, auth_error = authenticated_role_user_or_response(request, "driver")
+            if auth_error:
+                return auth_error
+            sale = Sale.objects.filter(id=sale_id, assigned_driver=user).first()
             if not sale:
                 return Response({"detail": "Delivery not found."}, status=status.HTTP_404_NOT_FOUND)
             next_status = request.data.get("status")
