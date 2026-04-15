@@ -54,7 +54,7 @@ function MainNav({ theme, onToggleTheme }) {
         </button>
         <Link to="/home" className="brand">
           <img className="brand-logo" src={topLogo} alt="Infaan Tech Products" />
-          <span className="brand-text">INFAAN TECH</span>
+          <span className="brand-text">TECH STORE</span>
         </Link>
       </header>
 
