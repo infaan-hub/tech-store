@@ -916,7 +916,7 @@ img {
 
 .product-card {
   position: relative;
-  min-height: 500px;
+  min-height: 0;
   overflow: hidden;
   border-radius: 30px;
   background:
@@ -967,9 +967,9 @@ img {
 
 .product-grid .product-card:not(.small) {
   display: grid;
-  grid-template-rows: auto 170px minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
   align-items: start;
-  padding: 0.9rem 0.9rem 1rem;
+  padding: 0.9rem 0.9rem 1.05rem;
   aspect-ratio: auto;
   font-family: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
@@ -1033,8 +1033,8 @@ img {
   z-index: 2;
   display: grid;
   place-items: center;
-  align-self: center;
-  padding: 0.35rem 0.2rem 0;
+  align-self: start;
+  padding: 0.65rem 0.2rem 0.35rem;
   min-height: 0;
 }
 
@@ -1049,8 +1049,8 @@ img {
 .product-grid .product-card:not(.small) .card-image img,
 .product-grid .product-card:not(.small) img {
   width: 100%;
-  max-width: 230px;
-  height: 160px;
+  max-width: 260px;
+  height: 190px;
   object-fit: contain;
   filter: drop-shadow(0 18px 24px rgba(72, 72, 68, 0.28));
 }
@@ -1078,11 +1078,11 @@ img {
 }
 
 .product-grid .product-card:not(.small) .product-title {
-  max-width: 16ch;
+  max-width: 20ch;
   margin: 0;
   color: #2f2f2a;
   font-family: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  font-size: clamp(1rem, 1.65vw, 1.28rem);
+  font-size: clamp(1.04rem, 1.75vw, 1.34rem);
   font-weight: 700;
   line-height: 1.06;
   letter-spacing: -0.035em;
@@ -1145,7 +1145,7 @@ img {
   background: transparent;
   border: 0;
   box-shadow: none;
-  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+  font-size: clamp(1.2rem, 2.35vw, 1.55rem);
   font-weight: 800;
   line-height: 1.05;
   text-shadow: 0 2px 10px rgba(255, 255, 255, 0.26);
@@ -1154,7 +1154,7 @@ img {
 
 .customer-product-card {
   position: relative;
-  min-height: 500px;
+  min-height: 0;
 }
 
 .customer-product-card .card-body {
