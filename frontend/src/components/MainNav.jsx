@@ -78,9 +78,6 @@ function MainNav({ theme, onToggleTheme }) {
             <span />
           </button>
           <p className="sidebar-kicker">Control Panel</p>
-          <div className="sidebar-brand-block">
-            <img className="sidebar-brand-logo" src={topLogo} alt="Infaan Tech Products" />
-          </div>
           <h2>Navigation</h2>
           <p className="muted">All actions are moved here for the new layout.</p>
         </div>
