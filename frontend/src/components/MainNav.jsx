@@ -3,6 +3,8 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
 
+const topLogo = "/infaan-tech-logo.jpg";
+
 function MainNav({ theme, onToggleTheme }) {
   const { user, logout, isAuthenticated } = useAuth();
   const { count } = useCart();
@@ -51,7 +53,8 @@ function MainNav({ theme, onToggleTheme }) {
           <span />
         </button>
         <Link to="/home" className="brand">
-          TECH STORE
+          <img className="brand-logo" src={topLogo} alt="Infaan Tech Products" />
+          <span className="brand-text">INFAAN TECH</span>
         </Link>
       </header>
 
@@ -75,6 +78,9 @@ function MainNav({ theme, onToggleTheme }) {
             <span />
           </button>
           <p className="sidebar-kicker">Control Panel</p>
+          <div className="sidebar-brand-block">
+            <img className="sidebar-brand-logo" src={topLogo} alt="Infaan Tech Products" />
+          </div>
           <h2>Navigation</h2>
           <p className="muted">All actions are moved here for the new layout.</p>
         </div>
