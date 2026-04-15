@@ -640,12 +640,12 @@ img {
   padding: 1.15rem 1.35rem 1rem;
   border-radius: 28px;
   background:
-    linear-gradient(180deg, rgba(243, 247, 243, 0.95), rgba(226, 233, 226, 0.92)),
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.8), transparent 26%);
-  border: 1px solid rgba(255, 255, 255, 0.82);
+    linear-gradient(180deg, rgba(23, 38, 29, 0.96), rgba(12, 23, 17, 0.94)),
+    radial-gradient(circle at top left, rgba(111, 224, 141, 0.12), transparent 26%);
+  border: 1px solid rgba(145, 228, 167, 0.24);
   box-shadow:
-    0 22px 42px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+    0 22px 42px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .store-clock-header,
@@ -658,7 +658,7 @@ img {
 }
 
 .store-clock-header {
-  color: rgba(20, 26, 22, 0.7);
+  color: rgba(226, 239, 230, 0.74);
   font-family: "Manrope", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.82rem;
   font-weight: 800;
@@ -677,8 +677,8 @@ img {
   min-height: 2rem;
   padding: 0.35rem 0.8rem;
   border-radius: 999px;
-  color: #ffffff;
-  background: linear-gradient(180deg, #172b21, #0f1f17);
+  color: #dff2e5;
+  background: linear-gradient(180deg, #21392b, #15261d);
   box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
 }
 
@@ -687,7 +687,7 @@ img {
   align-items: center;
   padding: 0.18rem;
   border-radius: 999px;
-  background: #121212;
+  background: #0d1611;
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
 }
 
@@ -697,7 +697,7 @@ img {
   border: 0;
   border-radius: 999px;
   padding: 0.28rem 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(223, 242, 229, 0.72);
   background: transparent;
   box-shadow: none;
   font-family: "Manrope", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -707,8 +707,8 @@ img {
 }
 
 .store-clock-toggle button.active {
-  color: #0e120f;
-  background: #ffffff;
+  color: #0f1712;
+  background: #b7d6bf;
 }
 
 .store-clock-digits {
@@ -716,7 +716,7 @@ img {
   align-items: baseline;
   justify-content: center;
   gap: 0.2rem;
-  color: #060706;
+  color: #b7d6bf;
   font-family: "Manrope", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(2.9rem, 10vw, 7.2rem);
   font-weight: 600;
@@ -737,7 +737,7 @@ img {
 }
 
 .store-clock-footer {
-  color: rgba(18, 24, 20, 0.68);
+  color: rgba(215, 232, 220, 0.72);
   font-family: "Manrope", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.92rem;
   font-weight: 700;
