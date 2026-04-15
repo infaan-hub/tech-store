@@ -101,9 +101,6 @@ function CustomerDashboardPage() {
       <h2>Customer Dashboard</h2>
       {error ? <p className="error">{error}</p> : null}
       <div className="dashboard-section">
-        <StoreSignBoard />
-      </div>
-      <div className="dashboard-section">
         <div className="section-heading-row">
           <div>
             <h3 id="customer-products" className="section-title">Shop Products</h3>
@@ -169,6 +166,9 @@ function CustomerDashboardPage() {
           ))}
         </div>
         {!products.length && !error ? <p className="muted">No products available yet.</p> : null}
+      </div>
+      <div className="dashboard-section">
+        <StoreSignBoard compact />
       </div>
       <div className="dashboard-section">
         <div className="section-heading-row">

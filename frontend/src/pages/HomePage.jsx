@@ -314,7 +314,7 @@ function HomePage() {
       </div>
       {!loading && !visibleProducts.length ? <p className="muted">No products match your search.</p> : null}
       <div className="dashboard-section">
-        <StoreSignBoard />
+        <StoreSignBoard compact />
       </div>
       <section className="about-home-section" aria-labelledby="about-us-title">
         <div className="about-home-card">

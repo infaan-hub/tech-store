@@ -38,7 +38,7 @@ function formatLongDate(date) {
   }).format(date);
 }
 
-function StoreSignBoard() {
+function StoreSignBoard({ compact = false }) {
   const { storeStatus } = useStoreStatus();
   const [now, setNow] = useState(() => new Date());
   const [hourMode, setHourMode] = useState("24");
@@ -71,7 +71,7 @@ function StoreSignBoard() {
   const dateLine = hasCountdown && nextChangeDate ? formatLongDate(nextChangeDate) : formatLongDate(now);
 
   return (
-    <section className="store-sign-section" aria-label="Store status sign">
+    <section className={`store-sign-section${compact ? " compact" : ""}`} aria-label="Store status sign">
       <div className="store-sign-wrap">
         <img
           className={`store-sign-image${isOpen ? " open" : " closed"}`}
